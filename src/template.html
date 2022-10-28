@@ -3,13 +3,18 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap w/ Webpack</title>
+    <title>RSS-READER</title>
   </head>
   <body>
-    <div class="container py-4 px-3 mx-auto">
-      <h1>Hello, Bootstrap and Webpack!</h1>
-      <button class="btn btn-primary">Primary button</button>
-    </div>
+    <h1 class="display-2">RSS агрегатор</h1>
+    <form>
+      <div class="form-group">
+        <label for="formGroupExampleInput">Начните читать RSS сегодня! Это легко, это красиво.</label>
+        <input type="text" class="form-control" id="formGroupExampleInput" aria-describedby="emailHelp" placeholder="Ссылка RSS">
+        <small class="form-text text-muted">Пример: https://ru.hexlet.io/lessons.rss</small>
+      </div>
+      <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
     <script src="index.js"></script>
   </body>
 </html>
