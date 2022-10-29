@@ -5,45 +5,23 @@ const input = document.querySelector('input');
 input.focus();
 let links = [];
 const renderLabel = (inputValue, result) => {
-    
     if (result === true && links.includes(inputValue)) {
         return {
-            label: {
-                innerHTML: 'RSS уже существует',
-                addClass: 'text-danger',
-                removeClass: 'text-success',
-            },
-            input: {
-                removeClass: 'is-valid',
-                addClass: 'is-invalid',
-            }
+            label: { innerHTML: 'RSS уже существует', addClass: 'text-danger', removeClass: 'text-success' },
+            input: { removeClass: 'is-valid', addClass: 'is-invalid' }
         };
     };
     if (result === true && !links.includes(inputValue)) {
         links.push(inputValue);
         return {
-            label: {
-                innerHTML: 'RSS успешно загружен',
-                addClass: 'text-success',
-                removeClass: 'text-danger',
-            },
-            input: {
-                removeClass: 'is-invalid',
-                addClass: 'is-valid',
-            }
+            label: { innerHTML: 'RSS успешно загружен', addClass: 'text-success', removeClass: 'text-danger' },
+            input: { removeClass: 'is-invalid', addClass: 'is-valid' }
         };
     };
     if (result === false) {
         return {
-            label: {
-                innerHTML: 'Ссылка должна быть валидным URL',
-                addClass: 'text-danger',
-                removeClass: 'text-success',
-            },
-            input: {
-                removeClass: 'is-valid',
-                addClass: 'is-invalid',
-            }
+            label: { innerHTML: 'Ссылка должна быть валидным URL', addClass: 'text-danger', removeClass: 'text-success' },
+            input: { removeClass: 'is-valid', addClass: 'is-invalid' }
         };
     };
 }
