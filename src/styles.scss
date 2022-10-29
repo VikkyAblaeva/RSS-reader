@@ -1,2 +1,11 @@
-// Import all of Bootstrap's CSS
 @import "~bootstrap/scss/bootstrap";
+
+.validResult {
+    margin-top: 10px;
+    display: block;
+    min-height: 50px;
+}
+
+.margin {
+    margin-top: 10px;
+}

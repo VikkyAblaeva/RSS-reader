@@ -1,11 +1,17 @@
-// Импортируйте наш пользовательский CSS
-import './styles.scss'
+import './styles.scss';
+import isValid from './utils.js';
 
-// Импортируйте весь JS Bootstrap
-import * as bootstrap from 'bootstrap'
-import Alert from 'bootstrap/js/dist/alert'
+const input = document.querySelector('input');
+input.focus();
 
-// или укажите, какие плагины вам нужны:
-import { Tooltip, Toast, Popover } from 'bootstrap'
+const label = document.querySelector('.validResult');
+const form = document.querySelector('form');
+form.addEventListener('submit', (event) => {
+    isValid(input.value)
+    .then((result) => {
+        result === false ? label.innerHTML = 'Ссылка должна быть валидным URL' : label.innerHTML = 'Valid';
+    });
+    
+    event.preventDefault();
 
-console.log('hello!');
+})
