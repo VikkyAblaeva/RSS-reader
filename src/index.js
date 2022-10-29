@@ -1,47 +1,25 @@
 import './styles.scss';
-import isValid from './utils.js';
+import { isValidURL, renderLabel } from './utils.js';
 
 const input = document.querySelector('input');
 input.focus();
-let links = [];
-const renderLabel = (inputValue, result) => {
-    if (result === true && links.includes(inputValue)) {
-        return {
-            label: { innerHTML: 'RSS уже существует', addClass: 'text-danger', removeClass: 'text-success' },
-            input: { removeClass: 'is-valid', addClass: 'is-invalid', value: inputValue }
-        };
-    };
-    if (result === true && !links.includes(inputValue)) {
-        links.push(inputValue);
-        return {
-            label: { innerHTML: 'RSS успешно загружен', addClass: 'text-success', removeClass: 'text-danger' },
-            input: { removeClass: 'is-invalid', addClass: 'is-valid', value: '' }
-        };
-    };
-    if (result === false) {
-        return {
-            label: { innerHTML: 'Ссылка должна быть валидным URL', addClass: 'text-danger', removeClass: 'text-success' },
-            input: { removeClass: 'is-valid', addClass: 'is-invalid', value: inputValue }
-        };
-    };
-}
+const links = [];
 
 const label = document.querySelector('.validResult');
 const form = document.querySelector('form');
 form.addEventListener('submit', (event) => {
-    isValid(input.value)
+  isValidURL(input.value)
     .then((result) => {
-        const render = renderLabel(input.value, result);
-        label.innerHTML = render.label.innerHTML;
-        label.classList.remove(render.label.removeClass);
-        label.classList.add(render.label.addClass);
-        input.classList.remove(render.input.removeClass);
-        input.classList.add(render.input.addClass);
-        input.value = render.input.value;
-        if (input.value === '') {
-            input.focus();
-        }
+      const render = renderLabel(input.value, result, links);
+      label.innerHTML = render.label.innerHTML;
+      label.classList.remove(render.label.removeClass);
+      label.classList.add(render.label.addClass);
+      input.classList.remove(render.input.removeClass);
+      input.classList.add(render.input.addClass);
+      input.value = render.input.value;
+      if (input.value === '') {
+        input.focus();
+      }
     });
-    event.preventDefault();
-
-})
+  event.preventDefault();
+});
