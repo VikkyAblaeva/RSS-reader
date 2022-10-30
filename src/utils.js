@@ -13,30 +13,28 @@ const isValidURL = (url) => {
 };
 
 const renderForm = (inputValue, result, links) => {
-  const valid = {
-    label: { innerHTML: 'RSS успешно загружен', addClass: 'text-success', removeClass: 'text-danger' },
-    input: { removeClass: 'is-invalid', addClass: 'is-valid', value: '' },
-  };
-  const invalid = {
-    label: { innerHTML: '', addClass: 'text-danger', removeClass: 'text-success' },
-    input: { removeClass: 'is-valid', addClass: 'is-invalid', value: inputValue },
-  };
-  const empty = {
-    label: { innerHTML: '', addClass: 'text-white', removeClass: 'text-white' },
-    input: { removeClass: 'is-invalid', addClass: 'text-dark', value: '' },
-  };
   if (inputValue === '') {
-    return empty;
-  }
-  if (result === true && links.includes(inputValue)) {
-    invalid.label.innerHTML = 'RSS уже существует';
-    return invalid;
+    return {
+      label: { text: '', className: 'result' },
+      input: { value: '', className: 'form-control mb-2' },
+    };
   }
   if (result === true && !links.includes(inputValue)) {
     links.push(inputValue);
-    return valid;
+    return {
+      label: { text: 'RSS успешно загружен', className: 'result text-success' },
+      input: { value: '', className: 'form-control mb-2' },
+    };
   }
-  invalid.label.innerHTML = 'Ссылка должна быть валидным URL';
+  const invalid = {
+    label: { text: '', className: 'result text-danger' },
+    input: { value: inputValue, className: 'form-control mb-2 is-invalid' },
+  };
+  if (result === true && links.includes(inputValue)) {
+    invalid.label.text = 'RSS уже существует';
+    return invalid;
+  }
+  invalid.label.text = 'Ссылка должна быть валидным URL';
   return invalid;
 };
 
