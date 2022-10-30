@@ -1,10 +1,10 @@
 import './styles.scss';
 import { isValidURL, renderForm } from './utils.js';
+import ru from './i18n/ru.js';
 
 const input = document.querySelector('input');
 input.focus();
 const links = [];
-
 const label = document.querySelector('.result');
 const form = document.querySelector('form');
 form.addEventListener('submit', (event) => {

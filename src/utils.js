@@ -15,7 +15,7 @@ const isValidURL = (url) => {
 const renderForm = (inputValue, result, links) => {
   if (inputValue === '') {
     return {
-      label: { text: '', className: 'result' },
+      label: { text: 'Поле не должно быть пустым', className: 'result text-dark' },
       input: { value: '', className: 'form-control mb-2' },
     };
   }
