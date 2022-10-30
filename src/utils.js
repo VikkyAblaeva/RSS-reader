@@ -12,7 +12,7 @@ const isValidURL = (url) => {
     .catch(() => false);
 };
 
-const renderLabel = (inputValue, result, links) => {
+const renderForm = (inputValue, result, links) => {
   const valid = {
     label: { innerHTML: 'RSS успешно загружен', addClass: 'text-success', removeClass: 'text-danger' },
     input: { removeClass: 'is-invalid', addClass: 'is-valid', value: '' },
@@ -21,6 +21,13 @@ const renderLabel = (inputValue, result, links) => {
     label: { innerHTML: '', addClass: 'text-danger', removeClass: 'text-success' },
     input: { removeClass: 'is-valid', addClass: 'is-invalid', value: inputValue },
   };
+  const empty = {
+    label: { innerHTML: '', addClass: 'text-white', removeClass: 'text-white' },
+    input: { removeClass: 'is-invalid', addClass: 'text-dark', value: '' },
+  };
+  if (inputValue === '') {
+    return empty;
+  }
   if (result === true && links.includes(inputValue)) {
     invalid.label.innerHTML = 'RSS уже существует';
     return invalid;
@@ -33,4 +40,4 @@ const renderLabel = (inputValue, result, links) => {
   return invalid;
 };
 
-export { isValidURL, renderLabel };
+export { isValidURL, renderForm };

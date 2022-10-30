@@ -1,5 +1,5 @@
 import './styles.scss';
-import { isValidURL, renderLabel } from './utils.js';
+import { isValidURL, renderForm } from './utils.js';
 
 const input = document.querySelector('input');
 input.focus();
@@ -10,12 +10,12 @@ const form = document.querySelector('form');
 form.addEventListener('submit', (event) => {
   isValidURL(input.value)
     .then((result) => {
-      const render = renderLabel(input.value, result, links);
+      const render = renderForm(input.value, result, links);
       label.innerHTML = render.label.innerHTML;
-      label.classList.remove(render.label.removeClass);
       label.classList.add(render.label.addClass);
-      input.classList.remove(render.input.removeClass);
+      label.classList.remove(render.label.removeClass);
       input.classList.add(render.input.addClass);
+      input.classList.remove(render.input.removeClass);
       input.value = render.input.value;
       if (input.value === '') {
         input.focus();
