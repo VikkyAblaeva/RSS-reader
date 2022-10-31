@@ -3,6 +3,6 @@ export default {
     notEmpty: 'Поле не должно быть пустым',
     sucsess: 'RSS успешно загружен',
     alreadyExists: 'RSS уже существует',
-    notValidURL: 'Ссылка должна быть валидным URL',
+    invalidURL: 'Ссылка должна быть валидным URL',
   },
 };
