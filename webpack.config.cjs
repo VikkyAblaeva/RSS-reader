@@ -29,6 +29,13 @@ module.exports = {
         test: /\.(scss)$/,
         use: [
           {
+            loader: 'babel-loader',
+            options: {
+              test: /\.cjs$/,
+              exclude: /node_modules/,
+            }
+          },
+          {
             loader: 'style-loader'
           },
           {

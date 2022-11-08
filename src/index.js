@@ -1,32 +1,7 @@
 import i18next from 'i18next';
 import './styles.scss';
-import { isValidURL } from './utils.js';
+import { isValidURL, getRss, parseRSS, getPostsAndFeeds, renderForm } from './utils.js';
 import resources from './i18n/resources.js';
-
-const renderForm = (params) => {
-  if (params.isValid === true && !params.links.includes(params.inputValue)) {
-    params.links.push(params.inputValue);
-    params.label.innerHTML = params.labelTexts.valid;
-    params.label.className = 'result text-success';
-    params.input.value = '';
-    params.input.className = 'form-control mb-2';
-    return;
-  }
-  if (params.inputValue === '') {
-    params.label.innerHTML = params.labelTexts.empty;
-    params.label.className = 'result text-dark';
-    return;
-  }
-  if (params.isValid === true && params.links.includes(params.inputValue)) {
-    params.label.innerHTML = params.labelTexts.exists;
-    params.label.className = 'result text-danger';
-    params.input.className = 'form-control mb-2 is-invalid';
-    return;
-  }
-  params.label.innerHTML = params.labelTexts.invalid;
-  params.label.className = 'result text-danger';
-  params.input.className = 'form-control mb-2 is-invalid';
-};
 
 const app = () => {
   const i18nInstance = i18next.createInstance();
@@ -46,13 +21,20 @@ const app = () => {
     const inputValue = input.value;
     isValidURL(inputValue)
       .then((isValid) => {
-        renderForm({ inputValue, isValid, labelTexts, label, input, links });
+        return renderForm({ inputValue, isValid, labelTexts, label, input, links });
+      });
+    getRss(inputValue)
+          .then(data => {
+              return parseRSS(data);
+          })
+      .then((normalizeFeedPosts) => {
+        getPostsAndFeeds(normalizeFeedPosts)
+      })
         if (inputValue === '') {
           input.focus();
         }
+        event.preventDefault();
       });
-    event.preventDefault();
-  });
 };
 
 app();
