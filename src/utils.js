@@ -63,6 +63,23 @@ const parseRSS = (data) => {
   return { feed, posts };
 };
 
+const getLi = (title, link) => {
+  const li = document.createElement('li');
+  li.classList.add('.d-block', 'm-2', 'fs-6', 'row');
+  const a = document.createElement('a');
+  a.setAttribute('href', link);
+  a.setAttribute('target', '_blank');
+  a.classList.add('.d-block', 'col-10', 'bold-text');
+  a.textContent = title;
+  const button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.classList.add('.d-block', 'btn', 'btn-outline-primary', 'col-2');
+  button.textContent = 'Просмотр';
+  li.append(a);
+  li.append(button);
+  return li;
+};
+
 const getPostsAndFeeds = (normalizeFeedPosts) => {
   const parentPosts = document.querySelector('#posts');
   parentPosts.classList.add('border-end', 'border-secondary', 'border-2');
@@ -77,19 +94,7 @@ const getPostsAndFeeds = (normalizeFeedPosts) => {
   const ul = document.createElement('ul');
   ul.classList.add('list-unstyled');
   normalizeFeedPosts.posts.map((post) => {
-    const li = document.createElement('li');
-    li.classList.add('.d-block', 'm-2', 'fs-6', 'row');
-    const a = document.createElement('a');
-    a.setAttribute('href', post.link);
-    a.setAttribute('target', '_blank');
-    a.classList.add('.d-block', 'col-10', 'bold-text');
-    a.textContent = post.title;
-    const button = document.createElement('button');
-    button.setAttribute('type', 'button');
-    button.classList.add('.d-block', 'btn', 'btn-outline-primary', 'col-2');
-    button.textContent = 'Просмотр';
-    li.append(a);
-    li.append(button);
+    const li = getLi(post.title, post.link);
     ul.append(li);
   });
   parentPosts.append(ul);
