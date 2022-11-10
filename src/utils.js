@@ -80,17 +80,29 @@ const getLi = (title, link) => {
   return li;
 };
 
+const getFeed = (title, description) => {
+  const feedTitle = document.createElement('p');
+  feedTitle.classList.add('h5');
+  feedTitle.textContent = title;
+  const feedDescription = document.createElement('p');
+  feedDescription.classList.add('text-muted');
+  feedDescription.textContent = description;
+  const parent = document.createElement('div');
+  parent.append(feedTitle);
+  parent.append(feedDescription);
+  return parent;
+};
+
 const getPostsAndFeeds = (normalizeFeedPosts) => {
   const parentPosts = document.querySelector('#posts');
   parentPosts.classList.add('border-end', 'border-secondary', 'border-2');
   const p = document.querySelector('.display-6');
   p.textContent = 'Посты';
   const lead = document.querySelector('.lead');
-  const feedTitle = document.querySelector('.h5');
-  const feedDescription = document.querySelector('.text-muted');
-  lead.textContent = 'Фиды'; // сделать, чтобы добавлялось несколько
-  feedTitle.textContent = normalizeFeedPosts.feed.title; // сделать, чтобы добавлялось несколько
-  feedDescription.textContent = normalizeFeedPosts.feed.description; // сделать, чтобы добавлялось несколько
+  lead.textContent = 'Фиды';
+  const parentFeed = lead.parentElement;
+  const feed = getFeed(normalizeFeedPosts.feed.title, normalizeFeedPosts.feed.description);
+  parentFeed.append(feed);
   const ul = document.createElement('ul');
   ul.classList.add('list-unstyled');
   normalizeFeedPosts.posts.map((post) => {
