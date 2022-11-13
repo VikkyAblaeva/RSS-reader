@@ -13,38 +13,15 @@ const isValidURL = (url) => {
     .catch(() => false);
 };
 
-const renderForm = (params) => {
-  if (params.isValid === true && !params.links.includes(params.inputValue)) {
-    params.links.push(params.inputValue);
-    params.label.innerHTML = params.labelTexts.valid;
-    params.label.className = 'result text-success';
-    params.input.value = '';
-    params.input.className = 'form-control mb-2';
-    return;
-  }
-  if (params.inputValue === '') {
-    params.label.innerHTML = params.labelTexts.empty;
-    params.label.className = 'result text-dark';
-    return;
-  }
-  if (params.isValid === true && params.links.includes(params.inputValue)) {
-    params.label.innerHTML = params.labelTexts.exists;
-    params.label.className = 'result text-danger';
-    params.input.className = 'form-control mb-2 is-invalid';
-    return;
-  }
-  params.label.innerHTML = params.labelTexts.invalid;
-  params.label.className = 'result text-danger';
-  params.input.className = 'form-control mb-2 is-invalid';
-};
-
 const getRss = (linkToFeed) => {
   return axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
   .catch(() => { throw Error('networkError')})
 };
+
 //http://feeds.feedburner.com/Astrobene
 const parseRSS = (data) => {
+  try {
   const parser = new DOMParser();
   const content = parser.parseFromString(data.data.contents, "text/xml");
   const feed = {
@@ -61,6 +38,10 @@ const parseRSS = (data) => {
     };
   })
   return { feed, posts };
+  }
+  catch {
+    throw new Error('No parse!');
+  }
 };
 
 const getLi = (title, link) => {
@@ -95,11 +76,8 @@ const getFeed = (title, description) => {
 
 const getPostsAndFeeds = (normalizeFeedPosts) => {
   const parentPosts = document.querySelector('#posts');
-  parentPosts.classList.add('border-end', 'border-secondary', 'border-2');
   const p = document.querySelector('.display-6');
-  p.textContent = 'Посты';
   const lead = document.querySelector('.lead');
-  lead.textContent = 'Фиды';
   const parentFeed = lead.parentElement;
   const feed = getFeed(normalizeFeedPosts.feed.title, normalizeFeedPosts.feed.description);
   parentFeed.append(feed);
@@ -110,6 +88,9 @@ const getPostsAndFeeds = (normalizeFeedPosts) => {
     ul.append(li);
   });
   parentPosts.append(ul);
+  p.textContent = 'Посты';
+  lead.textContent = 'Фиды';
+  parentPosts.classList.add('border-end', 'border-secondary', 'border-2');
 }
 
-export { isValidURL, getRss, parseRSS, getPostsAndFeeds, renderForm };
+export { isValidURL, getRss, parseRSS, getPostsAndFeeds };
