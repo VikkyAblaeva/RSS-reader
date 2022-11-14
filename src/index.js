@@ -70,6 +70,18 @@ const app = () => {
     input.focus();
     event.preventDefault();
   });
+  document.addEventListener('click', (event) => {
+    const eventTarget = event.target;
+    const eventTargetTagName = eventTarget.tagName;
+    if (eventTargetTagName === 'A') {
+      eventTarget.classList.add('text-muted');
+    }
+    if (Array.from(eventTarget.classList).includes('btn-outline-primary')) {
+      const parentEventTargetElement = eventTarget.parentElement;
+      const link = parentEventTargetElement.querySelector('a');
+      link.classList.add('text-muted');
+    }
+  })
 };
 
 app();
