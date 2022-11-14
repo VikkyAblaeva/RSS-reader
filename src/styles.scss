@@ -13,3 +13,13 @@
 .bold-text {
     font-weight: 700;
 }
+.btn-primary:hover {
+    background: #1d49aa;
+}
+.btn-primary:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px #cbd6ee;
+}
+.btn-lg {
+    font-size: calc(0.45rem + 0.45vw);
+}

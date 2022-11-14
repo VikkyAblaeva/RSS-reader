@@ -1,15 +1,9 @@
-const renderFormBeforeParse = (params) => {
-  const [ watchedformState, isValid, inputValue, labelTexts ] = params;
+const renderErrorsBeforeParse = (isValid, inputValue, labelTexts) => {
   if (inputValue === '') {
-    //watchedformState.label.innerHTML = labelTexts.empty;
-    //watchedformState.label.labelClassList = 'result text-dark';
-    throw new Error('Should not be empty');
+    throw new Error(labelTexts.empty);
   }
   if (isValid === false) {
-    //watchedformState.label.innerHTML = labelTexts.invalid;
-    //watchedformState.label.labelClassList = 'result text-danger';
-    //watchedformState.input.inputClassList = 'form-control mb-2 is-invalid';
-    throw new Error('URL is invalid');;
+    throw new Error(labelTexts.invalid);
   }
   return;
 };
@@ -23,24 +17,17 @@ const renderAfterGetRss = (params) => {
 
 const renderAfterParse = (params) => {
   const [ watchedformState, labelTexts, inputValue ] = params;
+  watchedformState.input.value = inputValue;
   if (watchedformState.links.includes(inputValue)) {
-    //watchedformState.label.innerHTML = labelTexts.exists;
-    //watchedformState.label.labelClassList = 'result text-danger';
-    //watchedformState.input.inputClassList = 'form-control mb-2 is-invalid';
-    throw new Error('Already exists!');
+    throw new Error(labelTexts.exists);
   }
-  if (!watchedformState.links.includes(inputValue)) {
-    watchedformState.links.push(inputValue);
-    watchedformState.label.innerHTML = labelTexts.valid;
-    watchedformState.label.labelClassList = 'result text-success';
-    watchedformState.input.inputClassList = 'form-control mb-2';
-    watchedformState.input.value = '';
-    return;
-   }
-    watchedformState.label.innerHTML = labelTexts.noRSS;
-    watchedformState.label.labelClassList = 'result text-danger';
-    watchedformState.input.inputClassList = 'form-control mb-2 is-invalid';
+  watchedformState.links.includes(inputValue)
+  watchedformState.links.push(inputValue);
+  watchedformState.label.innerHTML = labelTexts.valid;
+  watchedformState.label.labelClassList = 'result text-success';
+  watchedformState.input.inputClassList = 'form-control mb-2';
+  watchedformState.input.value = '';
   return;
 }
 
-export { renderAfterGetRss, renderFormBeforeParse, renderAfterParse };
+export { renderAfterGetRss, renderErrorsBeforeParse, renderAfterParse };

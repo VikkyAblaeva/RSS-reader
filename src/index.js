@@ -5,7 +5,7 @@ import {
   isValidURL, getRss, parseRSS, getPostsAndFeeds,
 } from './utils.js';
 import resources from './i18n/resources.js';
-import { renderAfterGetRss, renderFormBeforeParse, renderAfterParse } from './render.js';
+import { renderAfterGetRss, renderErrorsBeforeParse, renderAfterParse } from './render.js';
 
 const app = () => {
   const i18nInstance = i18next.createInstance();
@@ -55,9 +55,9 @@ const app = () => {
   form.addEventListener('submit', (event) => {
     const inputValue = input.value;
     isValidURL(inputValue)
-      .then((isValid) => renderFormBeforeParse([watchedformState, isValid, inputValue, labelTexts]))
+      .then((isValid) => renderErrorsBeforeParse(isValid, inputValue, labelTexts))
       .then(() => getRss(inputValue))
-      .then((rss) => parseRSS(rss))
+      .then((rss) => parseRSS(rss, labelTexts))
       .then((parsedData) => {
         getPostsAndFeeds(parsedData);
         renderAfterParse([watchedformState, labelTexts, inputValue]);

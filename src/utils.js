@@ -16,11 +16,11 @@ const isValidURL = (url) => {
 const getRss = (linkToFeed) => {
   return axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
-  .catch(() => { throw Error('networkError')})
+  .catch(() => { throw new Error('networkError') })
 };
 
 //http://feeds.feedburner.com/Astrobene
-const parseRSS = (data) => {
+const parseRSS = (data, labelTexts) => {
   try {
   const parser = new DOMParser();
   const content = parser.parseFromString(data.data.contents, "text/xml");
@@ -40,7 +40,7 @@ const parseRSS = (data) => {
   return { feed, posts };
   }
   catch {
-    throw new Error('No parse!');
+    throw new Error(labelTexts.noRSS);
   }
 };
 
@@ -54,7 +54,7 @@ const getLi = (title, link) => {
   a.textContent = title;
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
-  button.classList.add('.d-block', 'btn', 'btn-outline-primary', 'col-2');
+  button.classList.add('.d-block', 'btn', 'btn-outline-primary', 'col-2', 'btn-lg');
   button.textContent = 'Просмотр';
   li.append(a);
   li.append(button);
