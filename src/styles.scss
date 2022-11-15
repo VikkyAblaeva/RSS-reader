@@ -22,4 +22,9 @@
 }
 .btn-lg {
     font-size: calc(0.45rem + 0.45vw);
+    max-height: 40px;
+    max-width: 100px;
+}
+a {
+    z-index: 2;
 }

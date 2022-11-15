@@ -46,15 +46,15 @@ const parseRSS = (data, labelTexts) => {
 
 const getLi = (title, link) => {
   const li = document.createElement('li');
-  li.classList.add('d-flex', 'm-2', 'fs-6', 'row');
+  li.classList.add('d-flex', 'm-2', 'fs-6', 'row', 'i-block', 'justify-content-between');
   const a = document.createElement('a');
   a.setAttribute('href', link);
   a.setAttribute('target', '_blank');
-  a.classList.add('i-block', 'col-10', 'bold-text');
+  a.classList.add('i-block', 'bold-text', 'col-10');
   a.textContent = title;
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
-  button.classList.add('i-block', 'btn', 'btn-outline-primary', 'col-2', 'btn-lg');
+  button.classList.add('btn', 'btn-outline-primary', 'btn-lg', 'i-block', 'col-2');
   button.textContent = 'Просмотр';
   li.append(a);
   li.append(button);
@@ -63,12 +63,13 @@ const getLi = (title, link) => {
 
 const getFeed = (title, description) => {
   const feedTitle = document.createElement('p');
-  feedTitle.classList.add('h5');
+  feedTitle.classList.add('h5', 'm-2', 'i-block');
   feedTitle.textContent = title;
   const feedDescription = document.createElement('p');
-  feedDescription.classList.add('text-muted');
+  feedDescription.classList.add('text-muted', 'm-2', 'i-block');
   feedDescription.textContent = description;
   const parent = document.createElement('div');
+  parent.classList.add('m-2');
   parent.append(feedTitle);
   parent.append(feedDescription);
   return parent;
