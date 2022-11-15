@@ -46,15 +46,15 @@ const parseRSS = (data, labelTexts) => {
 
 const getLi = (title, link) => {
   const li = document.createElement('li');
-  li.classList.add('.d-block', 'm-2', 'fs-6', 'row');
+  li.classList.add('d-flex', 'm-2', 'fs-6', 'row');
   const a = document.createElement('a');
   a.setAttribute('href', link);
   a.setAttribute('target', '_blank');
-  a.classList.add('.i-block', 'col-10', 'bold-text');
+  a.classList.add('i-block', 'col-10', 'bold-text');
   a.textContent = title;
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
-  button.classList.add('.i-block', 'btn', 'btn-outline-primary', 'col-2', 'btn-lg');
+  button.classList.add('i-block', 'btn', 'btn-outline-primary', 'col-2', 'btn-lg');
   button.textContent = 'Просмотр';
   li.append(a);
   li.append(button);
