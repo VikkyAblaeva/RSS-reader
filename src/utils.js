@@ -46,7 +46,6 @@ const parseRSS = (data, labelTexts) => {
 
 const getLi = (title, link) => {
   const li = document.createElement('li');
-<<<<<<< HEAD
   li.classList.add('d-flex', 'm-2', 'fs-6');
   const a = document.createElement('a');
   a.setAttribute('href', link);
@@ -56,17 +55,6 @@ const getLi = (title, link) => {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.classList.add('btn', 'btn-outline-primary', 'd-block', 'personal', 'col-3');
-=======
-  li.classList.add('d-flex', 'm-2', 'fs-6', 'row', 'i-block', 'justify-content-between');
-  const a = document.createElement('a');
-  a.setAttribute('href', link);
-  a.setAttribute('target', '_blank');
-  a.classList.add('i-block', 'bold-text', 'col-10');
-  a.textContent = title;
-  const button = document.createElement('button');
-  button.setAttribute('type', 'button');
-  button.classList.add('btn', 'btn-outline-primary', 'btn-lg', 'i-block', 'col-2');
->>>>>>> 20c913006045e298ace052a72cca2afc5c565d8a
   button.textContent = 'Просмотр';
   li.append(a);
   li.append(button);
