@@ -22,24 +22,24 @@ const getRss = (linkToFeed) => {
 //http://feeds.feedburner.com/Astrobene
 const parseRSS = (data, labelTexts) => {
   try {
-  const parser = new DOMParser();
-  const content = parser.parseFromString(data.data.contents, "text/xml");
-  const feed = {
-    title: content.querySelector('channel title').textContent,
-    description: content.querySelector('channel description').textContent,
-  };
-  const items = content.querySelectorAll('item');
-  const posts = Array.from(items).map((item) => {
-    return {
-      title: item.querySelector('title').textContent,
-      link: item.querySelector('link').textContent,
-      description: item.querySelector('description').textContent,
-      watch: false,
+    const parser = new DOMParser();
+    const content = parser.parseFromString(data.data.contents, 'text/xml');
+    const feed = {
+      title: content.querySelector('channel title').textContent,
+      description: content.querySelector('channel description').textContent,
     };
-  })
-  return { feed, posts };
-  }
-  catch {
+    const items = content.querySelectorAll('item');
+    const posts = Array.from(items).map((item) => {
+      const post = {
+        title: item.querySelector('title').textContent,
+        link: item.querySelector('link').textContent,
+        description: item.querySelector('description').textContent,
+        watch: false,
+      };
+      return post;
+    });
+    return { feed, posts };
+  } catch {
     throw new Error(labelTexts.noRSS);
   }
 };
@@ -91,6 +91,8 @@ const getPostsAndFeeds = (normalizeFeedPosts) => {
   p.textContent = 'Посты';
   lead.textContent = 'Фиды';
   parentPosts.classList.add('border-end', 'border-secondary', 'border-2');
-}
+};
 
-export { isValidURL, getRss, parseRSS, getPostsAndFeeds };
+export {
+  isValidURL, getRss, parseRSS, getPostsAndFeeds,
+};
