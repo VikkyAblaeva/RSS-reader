@@ -81,7 +81,7 @@ const app = () => {
       const link = parentEventTargetElement.querySelector('a');
       link.classList.add('text-muted');
     }
-  })
+  });
 };
 
 app();

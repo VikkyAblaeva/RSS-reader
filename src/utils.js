@@ -22,30 +22,31 @@ const getRss = (linkToFeed) => {
 //http://feeds.feedburner.com/Astrobene
 const parseRSS = (data, labelTexts) => {
   try {
-  const parser = new DOMParser();
-  const content = parser.parseFromString(data.data.contents, "text/xml");
-  const feed = {
-    title: content.querySelector('channel title').textContent,
-    description: content.querySelector('channel description').textContent,
-  };
-  const items = content.querySelectorAll('item');
-  const posts = Array.from(items).map((item) => {
-    return {
-      title: item.querySelector('title').textContent,
-      link: item.querySelector('link').textContent,
-      description: item.querySelector('description').textContent,
-      watch: false,
+    const parser = new DOMParser();
+    const content = parser.parseFromString(data.data.contents, 'text/xml');
+    const feed = {
+      title: content.querySelector('channel title').textContent,
+      description: content.querySelector('channel description').textContent,
     };
-  })
-  return { feed, posts };
-  }
-  catch {
+    const items = content.querySelectorAll('item');
+    const posts = Array.from(items).map((item) => {
+      const post = {
+        title: item.querySelector('title').textContent,
+        link: item.querySelector('link').textContent,
+        description: item.querySelector('description').textContent,
+        watch: false,
+      };
+      return post;
+    });
+    return { feed, posts };
+  } catch {
     throw new Error(labelTexts.noRSS);
   }
 };
 
 const getLi = (title, link) => {
   const li = document.createElement('li');
+<<<<<<< HEAD
   li.classList.add('d-flex', 'm-2', 'fs-6');
   const a = document.createElement('a');
   a.setAttribute('href', link);
@@ -55,6 +56,17 @@ const getLi = (title, link) => {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.classList.add('btn', 'btn-outline-primary', 'd-block', 'personal', 'col-3');
+=======
+  li.classList.add('d-flex', 'm-2', 'fs-6', 'row', 'i-block', 'justify-content-between');
+  const a = document.createElement('a');
+  a.setAttribute('href', link);
+  a.setAttribute('target', '_blank');
+  a.classList.add('i-block', 'bold-text', 'col-10');
+  a.textContent = title;
+  const button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.classList.add('btn', 'btn-outline-primary', 'btn-lg', 'i-block', 'col-2');
+>>>>>>> 20c913006045e298ace052a72cca2afc5c565d8a
   button.textContent = 'Просмотр';
   li.append(a);
   li.append(button);
@@ -63,12 +75,13 @@ const getLi = (title, link) => {
 
 const getFeed = (title, description) => {
   const feedTitle = document.createElement('p');
-  feedTitle.classList.add('h5');
+  feedTitle.classList.add('h5', 'm-2', 'i-block');
   feedTitle.textContent = title;
   const feedDescription = document.createElement('p');
-  feedDescription.classList.add('text-muted');
+  feedDescription.classList.add('text-muted', 'm-2', 'i-block');
   feedDescription.textContent = description;
   const parent = document.createElement('div');
+  parent.classList.add('m-2');
   parent.append(feedTitle);
   parent.append(feedDescription);
   return parent;
@@ -91,6 +104,8 @@ const getPostsAndFeeds = (normalizeFeedPosts) => {
   p.textContent = 'Посты';
   lead.textContent = 'Фиды';
   parentPosts.classList.add('border-end', 'border-secondary', 'border-2');
-}
+};
 
-export { isValidURL, getRss, parseRSS, getPostsAndFeeds };
+export {
+  isValidURL, getRss, parseRSS, getPostsAndFeeds,
+};
