@@ -76,6 +76,9 @@ const getFeed = (title, description) => {
 };
 
 const getPostsAndFeeds = (normalizeFeedPosts) => {
+  //сделать watchedState для постов
+  //сделать здесь проверку первого поста с watchedState первым постом
+  //если они совпадут, то ничего не делаем
   const parentPosts = document.querySelector('#posts');
   const p = document.querySelector('.display-6');
   const lead = document.querySelector('.lead');

@@ -5,7 +5,7 @@ import {
   isValidURL, getRss, parseRSS, getPostsAndFeeds,
 } from './utils.js';
 import resources from './i18n/resources.js';
-import { renderAfterGetRss, renderErrorsBeforeParse, renderAfterParse } from './render.js';
+import { renderErrors, renderErrorsBeforeParse, renderAfterParse } from './render.js';
 
 const app = () => {
   const i18nInstance = i18next.createInstance();
@@ -43,7 +43,7 @@ const app = () => {
         label.classList = value;
         break;
       case 'input.value':
-        input.value = '';
+        input.value = value;
         break;
       case 'input.inputClassList':
         input.classList = value;
@@ -58,14 +58,11 @@ const app = () => {
       .then((isValid) => renderErrorsBeforeParse(isValid, inputValue, labelTexts))
       .then(() => getRss(inputValue))
       .then((rss) => parseRSS(rss, labelTexts))
-      .then((parsedData) => {
-        getPostsAndFeeds(parsedData);
-        renderAfterParse([watchedformState, labelTexts, inputValue]);
-      })
+      .then((parsedData) => getPostsAndFeeds(parsedData))
+      .then(() => renderAfterParse([watchedformState, labelTexts, inputValue]))
       .catch((err) => {
         watchedformState.errors.push(err);
-        console.log(watchedformState.errors);
-      //здесь нужна функция, которая по ошибке будет определять состояние label и input
+        renderErrors([watchedformState, inputValue]);
       });
     input.focus();
     event.preventDefault();
@@ -80,6 +77,7 @@ const app = () => {
       const parentEventTargetElement = eventTarget.parentElement;
       const link = parentEventTargetElement.querySelector('a');
       link.classList.add('text-muted');
+      //здесь будет модальное окно
     }
   });
 };
