@@ -13,11 +13,9 @@ const isValidURL = (url) => {
     .catch(() => false);
 };
 
-const getRss = (linkToFeed) => {
-  return axios
+const getRss = (linkToFeed) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
-  .catch(() => { throw new Error('networkError') })
-};
+  .catch(() => { throw new Error('networkError'); });
 
 //http://feeds.feedburner.com/Astrobene
 const parseRSS = (data, labelTexts) => {
@@ -90,11 +88,12 @@ const getPostsAndFeeds = (normalizeFeedPosts) => {
   normalizeFeedPosts.posts.map((post) => {
     const li = getLi(post.title, post.link);
     ul.append(li);
+    return li;
   });
   parentPosts.append(ul);
   p.textContent = 'Посты';
   lead.textContent = 'Фиды';
-  parentPosts.classList.add('border-end', 'border-secondary', 'border-2');
+  parentPosts.classList.add('border-end', 'border-secondary', 'border-1');
 };
 
 export {

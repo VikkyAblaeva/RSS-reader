@@ -1,11 +1,12 @@
 import i18next from 'i18next';
 import './styles.scss';
-import onChange from 'on-change';
 import {
   isValidURL, getRss, parseRSS, getPostsAndFeeds,
 } from './utils.js';
 import resources from './i18n/resources.js';
 import { renderErrors, renderErrorsBeforeParse, renderAfterParse } from './render.js';
+import { formState } from './states/states.js';
+import { watchedformState, input, label } from './watchers/watchers.js';
 
 const app = () => {
   const i18nInstance = i18next.createInstance();
@@ -18,39 +19,7 @@ const app = () => {
     noRSS: i18nInstance.t('invalidRSS'),
     networkErr: i18nInstance.t('networkErr'),
   };
-  const formState = {
-    input: {
-      value: '',
-      inputClassList: '',
-    },
-    label: {
-      innerHTML: '',
-      labelClassList: '',
-    },
-    links: [],
-    errors: [],
-  };
-
-  const input = document.querySelector('input');
   input.focus();
-  const label = document.querySelector('.result');
-  const watchedformState = onChange(formState, (path, value) => {
-    switch (path) {
-      case 'label.innerHTML':
-        label.innerHTML = value;
-        break;
-      case 'label.labelClassList':
-        label.classList = value;
-        break;
-      case 'input.value':
-        input.value = value;
-        break;
-      case 'input.inputClassList':
-        input.classList = value;
-        break;
-    }
-  });
-
   const form = document.querySelector('form');
   form.addEventListener('submit', (event) => {
     const inputValue = input.value;
@@ -67,17 +36,23 @@ const app = () => {
     input.focus();
     event.preventDefault();
   });
+  const modal = document.getElementById('myModal');
   document.addEventListener('click', (event) => {
     const eventTarget = event.target;
+    const eventTargetClasslist = Array.from(eventTarget.classList);
     const eventTargetTagName = eventTarget.tagName;
+    const eventTargetId = eventTarget.id;
     if (eventTargetTagName === 'A') {
       eventTarget.classList.add('text-muted');
     }
-    if (Array.from(eventTarget.classList).includes('btn-outline-primary')) {
-      const parentEventTargetElement = eventTarget.parentElement;
-      const link = parentEventTargetElement.querySelector('a');
+    const parentEventTarget = eventTarget.parentElement;
+    if (parentEventTarget.tagName === 'LI') {
+      const link = parentEventTarget.querySelector('a');
       link.classList.add('text-muted');
-      //здесь будет модальное окно
+      modal.style.display = "block";
+    }
+    if (eventTargetClasslist.includes('close') || eventTargetClasslist.includes('modal') || eventTargetId === 'closeModal') {
+      modal.style.display = "none";
     }
   });
 };
