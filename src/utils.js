@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 import axios from 'axios';
+import { watchedPostsState } from './watchers/watchers.js';
 
 const isValidURL = (url) => {
   const schema = yup.object().shape({
@@ -34,6 +35,7 @@ const parseRSS = (data, labelTexts) => {
         description: item.querySelector('description').textContent,
         watch: false,
       };
+      watchedPostsState.posts.push(post);
       return post;
     });
     return { feed, posts };
@@ -96,6 +98,30 @@ const getPostsAndFeeds = (normalizeFeedPosts) => {
   parentPosts.classList.add('border-end', 'border-secondary', 'border-1');
 };
 
+const getParams = (element) => {
+  const params = {
+    classlist: Array.from(element.classList),
+    tagName: element.tagName,
+    id: element.id,
+    parent: element.parentElement,
+  };
+  return params;
+};
+
+const getCurrentPost = (link) => {
+  const linkTextContent = link.textContent;
+  const currentPost = watchedPostsState.posts.map((post) => {
+    if (post.title === linkTextContent) {
+      return {
+        link: post.link,
+        title: post.title,
+        description: post.description,
+      };
+    }
+  });
+  return currentPost[0];
+};
+
 export {
-  isValidURL, getRss, parseRSS, getPostsAndFeeds,
+  isValidURL, getRss, parseRSS, getPostsAndFeeds, getParams, getCurrentPost,
 };

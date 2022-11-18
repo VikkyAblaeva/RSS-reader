@@ -11,4 +11,26 @@ const formState = {
   errors: [],
 };
 
-export default formState;
+const modalWindowState = {
+  modal: {
+    style: {
+      display: '',
+    },
+    currentPost: {
+      link: '',
+      description: '',
+      title: '',
+    },
+  },
+};
+
+const postsState = {
+  currentPost: {
+    link: '',
+    description: '',
+    title: '',
+  },
+  posts: [],
+};
+
+export { formState, modalWindowState, postsState };

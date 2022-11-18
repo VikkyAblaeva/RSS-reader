@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import formState from '../states/states.js';
+import { formState, modalWindowState, postsState } from '../states/states.js';
 
 const input = document.querySelector('input');
 const label = document.querySelector('.result');
@@ -18,8 +18,51 @@ const watchedformState = onChange(formState, (path, value) => {
       input.classList = value;
       break;
     default:
-      console.log('Unknown state');
+      break;
+  }
+});
+const modal = document.getElementById('myModal');
+
+const watchedModalWindowState = onChange(modalWindowState, (path, value) => {
+  const modalHeader = document.querySelector('modal-header');
+  const modalBody = document.querySelector('modal-body');
+  switch (path) {
+    case 'modal.style.display':
+      modal.style.display = value;
+      break;
+    case 'modal.currentPost.description':
+      console.log(modalBody);
+      modalBody.textContent = value;
+      break;
+    case 'modal.currentPost.title':
+      console.log(modalHeader);
+      modalHeader.textContent = value;
+      break;
+    default:
+      break;
   }
 });
 
-export { watchedformState, input, label };
+const watchedPostsState = onChange(postsState, (path, value) => {
+  switch (path) {
+    case 'watchedPostsState.posts':
+      postsState.posts.push(value);
+      break;
+    case 'watchedPostsState.currentPost.link':
+      postsState.currentPost.link = 'value';
+      break;
+    case 'watchedPostsState.currentPost.title':
+      postsState.currentPost.title = 'value';
+      break;
+    case 'watchedPostsState.currentPost.description':
+      postsState.currentPost.description = 'value';
+      break;
+    default:
+      break;
+  }
+});
+
+export {
+  watchedformState, watchedModalWindowState, watchedPostsState, input,
+  label, modal,
+};

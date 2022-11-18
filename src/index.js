@@ -1,12 +1,16 @@
 import i18next from 'i18next';
 import './styles.scss';
 import {
-  isValidURL, getRss, parseRSS, getPostsAndFeeds,
+  isValidURL, getRss, parseRSS, getPostsAndFeeds, getParams, getCurrentPost,
 } from './utils.js';
 import resources from './i18n/resources.js';
-import { renderErrors, renderErrorsBeforeParse, renderAfterParse } from './render.js';
-import { formState } from './states/states.js';
-import { watchedformState, input, label } from './watchers/watchers.js';
+import {
+  renderErrors, renderErrorsBeforeParse, renderAfterParse, renderModalWindow,
+} from './render.js';
+import {
+  watchedformState, watchedModalWindowState, watchedPostsState, input,
+  label, modal,
+} from './watchers/watchers.js';
 
 const app = () => {
   const i18nInstance = i18next.createInstance();
@@ -36,23 +40,24 @@ const app = () => {
     input.focus();
     event.preventDefault();
   });
-  const modal = document.getElementById('myModal');
   document.addEventListener('click', (event) => {
     const eventTarget = event.target;
-    const eventTargetClasslist = Array.from(eventTarget.classList);
-    const eventTargetTagName = eventTarget.tagName;
-    const eventTargetId = eventTarget.id;
-    if (eventTargetTagName === 'A') {
+    const params = getParams(eventTarget);
+    if (params.tagName === 'A') {
       eventTarget.classList.add('text-muted');
     }
-    const parentEventTarget = eventTarget.parentElement;
-    if (parentEventTarget.tagName === 'LI') {
-      const link = parentEventTarget.querySelector('a');
+    if (params.parent.tagName === 'LI' && params.tagName === 'BUTTON') {
+      const link = params.parent.querySelector('a');
       link.classList.add('text-muted');
-      modal.style.display = "block";
+      const currentPost = getCurrentPost(link);
+      console.log(currentPost);
+      renderModalWindow([watchedModalWindowState, 'block', currentPost]);
     }
-    if (eventTargetClasslist.includes('close') || eventTargetClasslist.includes('modal') || eventTargetId === 'closeModal') {
-      modal.style.display = "none";
+    //if (params.classlist.includes('close') || params.classlist.includes('modal') || params.id === 'closeModal') {
+      //renderModalWindow([watchedModalWindowState, 'none', {}]);
+    //}
+    if (params.id === 'go') {
+      window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank').focus();
     }
   });
 };
