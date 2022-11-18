@@ -31,18 +31,14 @@ const renderErrors = (params) => {
   watchedformState.label.innerHTML = lastError.message;
 };
 
-const renderModalWindow = (params) => {
-  const [watchedModalWindowState, value, currentPost] = params;
-  if (value === 'none') {
-    watchedModalWindowState.modal.style.display = 'none';
+const renderModalWindow = {
+  displayNone: (watchedModalWindowState) => watchedModalWindowState.modal.style.display = 'none',
+  displayBlock: (watchedModalWindowState) => watchedModalWindowState.modal.style.display = 'block',
+  renderModalWindowState: (watchedModalWindowState, currentPost) => {
+    watchedModalWindowState.modal.currentPost.link = currentPost.link;
+    watchedModalWindowState.modal.currentPost.description = currentPost.description;
+    watchedModalWindowState.modal.currentPost.title = currentPost.title;
   }
-  if (value === 'block') {
-    watchedModalWindowState.modal.style.display = 'block';
-  }
-  console.log(currentPost);
-  watchedModalWindowState.modal.currentPost.link = currentPost.link;
-  watchedModalWindowState.modal.currentPost.description = currentPost.description;
-  watchedModalWindowState.modal.currentPost.title = currentPost.title;
 };
 
 export {

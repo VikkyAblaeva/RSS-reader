@@ -109,9 +109,9 @@ const getParams = (element) => {
 };
 
 const getCurrentPost = (link) => {
-  const linkTextContent = link.textContent;
+  const linkTextContent = link.innerHTML;
   const currentPost = watchedPostsState.posts.map((post) => {
-    if (post.title === linkTextContent) {
+    if (String(post.title) === String(linkTextContent)) {
       return {
         link: post.link,
         title: post.title,
@@ -119,7 +119,8 @@ const getCurrentPost = (link) => {
       };
     }
   });
-  return currentPost[0];
+  const filteredPost = currentPost.filter((item) => item !== undefined);
+  return filteredPost[0];
 };
 
 export {

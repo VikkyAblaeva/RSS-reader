@@ -50,14 +50,14 @@ const app = () => {
       const link = params.parent.querySelector('a');
       link.classList.add('text-muted');
       const currentPost = getCurrentPost(link);
-      console.log(currentPost);
-      renderModalWindow([watchedModalWindowState, 'block', currentPost]);
+      renderModalWindow.renderModalWindowState(watchedModalWindowState, currentPost);
+      renderModalWindow.displayBlock(watchedModalWindowState);
     }
-    //if (params.classlist.includes('close') || params.classlist.includes('modal') || params.id === 'closeModal') {
-      //renderModalWindow([watchedModalWindowState, 'none', {}]);
-    //}
+    if (params.classlist.includes('close') || params.classlist.includes('modal') || params.id === 'closeModal') {
+      renderModalWindow.displayNone(watchedModalWindowState);
+    }
     if (params.id === 'go') {
-      window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank').focus();
+      window.open(watchedModalWindowState.modal.currentPost.link, '_blank').focus();
     }
   });
 };

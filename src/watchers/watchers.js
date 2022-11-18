@@ -24,19 +24,18 @@ const watchedformState = onChange(formState, (path, value) => {
 const modal = document.getElementById('myModal');
 
 const watchedModalWindowState = onChange(modalWindowState, (path, value) => {
-  const modalHeader = document.querySelector('modal-header');
-  const modalBody = document.querySelector('modal-body');
+  const modalHeader = document.querySelector('.modal-header');
+  const h2 = modalHeader.querySelector('h2');
+  const modalBody = document.querySelector('.modal-body');
   switch (path) {
     case 'modal.style.display':
       modal.style.display = value;
       break;
     case 'modal.currentPost.description':
-      console.log(modalBody);
       modalBody.textContent = value;
       break;
     case 'modal.currentPost.title':
-      console.log(modalHeader);
-      modalHeader.textContent = value;
+      h2.textContent = value;
       break;
     default:
       break;
