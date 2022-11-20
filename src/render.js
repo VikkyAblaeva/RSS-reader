@@ -31,16 +31,24 @@ const renderErrors = (params) => {
   watchedformState.label.innerHTML = lastError.message;
 };
 
-const renderModalWindow = {
-  displayNone: (watchedModalWindowState) => watchedModalWindowState.modal.style.display = 'none',
-  displayBlock: (watchedModalWindowState) => watchedModalWindowState.modal.style.display = 'block',
-  renderModalWindowState: (watchedModalWindowState, currentPost) => {
-    watchedModalWindowState.modal.currentPost.link = currentPost.link;
-    watchedModalWindowState.modal.currentPost.description = currentPost.description;
-    watchedModalWindowState.modal.currentPost.title = currentPost.title;
-  }
+const displayNone = (params) => {
+  const [watchedModalWindowState] = params;
+  watchedModalWindowState.modal.style.display = 'none';
+};
+
+const displayBlock = (params) => {
+  const [watchedModalWindowState] = params;
+  watchedModalWindowState.modal.style.display = 'block';
+};
+
+const renderModalWindow = (params) => {
+  const [watchedModalWindowState, currentPost] = params;
+  watchedModalWindowState.modal.currentPost.link = currentPost.link;
+  watchedModalWindowState.modal.currentPost.description = currentPost.description;
+  watchedModalWindowState.modal.currentPost.title = currentPost.title;
 };
 
 export {
   renderErrors, renderErrorsBeforeParse, renderAfterParse, renderModalWindow,
+  displayNone, displayBlock,
 };

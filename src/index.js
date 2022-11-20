@@ -6,10 +6,10 @@ import {
 import resources from './i18n/resources.js';
 import {
   renderErrors, renderErrorsBeforeParse, renderAfterParse, renderModalWindow,
+  displayNone, displayBlock,
 } from './render.js';
 import {
-  watchedformState, watchedModalWindowState, watchedPostsState, input,
-  label, modal,
+  watchedformState, watchedModalWindowState, input,
 } from './watchers/watchers.js';
 
 const app = () => {
@@ -50,11 +50,11 @@ const app = () => {
       const link = params.parent.querySelector('a');
       link.classList.add('text-muted');
       const currentPost = getCurrentPost(link);
-      renderModalWindow.renderModalWindowState(watchedModalWindowState, currentPost);
-      renderModalWindow.displayBlock(watchedModalWindowState);
+      renderModalWindow([watchedModalWindowState, currentPost]);
+      displayBlock([watchedModalWindowState]);
     }
     if (params.classlist.includes('close') || params.classlist.includes('modal') || params.id === 'closeModal') {
-      renderModalWindow.displayNone(watchedModalWindowState);
+      displayNone([watchedModalWindowState]);
     }
     if (params.id === 'go') {
       window.open(watchedModalWindowState.modal.currentPost.link, '_blank').focus();

@@ -18,7 +18,6 @@ const getRss = (linkToFeed) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
   .catch(() => { throw new Error('networkError'); });
 
-//http://feeds.feedburner.com/Astrobene
 const parseRSS = (data, labelTexts) => {
   try {
     const parser = new DOMParser();
@@ -27,8 +26,13 @@ const parseRSS = (data, labelTexts) => {
       title: content.querySelector('channel title').textContent,
       description: content.querySelector('channel description').textContent,
     };
+    const firstPost = watchedPostsState.posts[0];
     const items = content.querySelectorAll('item');
     const posts = Array.from(items).map((item) => {
+      const title = item.querySelector('title').textContent;
+      if (firstPost && (String(title) === String(firstPost?.title))) {
+        throw new Error(labelTexts.exists);
+      }
       const post = {
         title: item.querySelector('title').textContent,
         link: item.querySelector('link').textContent,
@@ -39,8 +43,12 @@ const parseRSS = (data, labelTexts) => {
       return post;
     });
     return { feed, posts };
-  } catch {
-    throw new Error(labelTexts.noRSS);
+  } catch (error) {
+    if (error?.message === labelTexts.exists) {
+      throw new Error(labelTexts.exists);
+    } else {
+      throw new Error(labelTexts.noRSS);
+    }
   }
 };
 
@@ -76,9 +84,6 @@ const getFeed = (title, description) => {
 };
 
 const getPostsAndFeeds = (normalizeFeedPosts) => {
-  //сделать watchedState для постов
-  //сделать здесь проверку первого поста с watchedState первым постом
-  //если они совпадут, то ничего не делаем
   const parentPosts = document.querySelector('#posts');
   const p = document.querySelector('.display-6');
   const lead = document.querySelector('.lead');
@@ -118,8 +123,9 @@ const getCurrentPost = (link) => {
         description: post.description,
       };
     }
+    return false;
   });
-  const filteredPost = currentPost.filter((item) => item !== undefined);
+  const filteredPost = currentPost.filter((item) => item !== false);
   return filteredPost[0];
 };
 
