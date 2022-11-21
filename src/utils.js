@@ -14,6 +14,8 @@ const isValidURL = (url) => {
     .catch(() => false);
 };
 
+const getActualPostsTitle = (watchedPostsState) => watchedPostsState.posts.map((post) => post.title);
+
 const getRss = (linkToFeed) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
   .catch(() => { throw new Error('networkError'); });
@@ -26,17 +28,19 @@ const parseRSS = (data, labelTexts) => {
       title: content.querySelector('channel title').textContent,
       description: content.querySelector('channel description').textContent,
     };
-    const firstPost = watchedPostsState.posts[0];
+    const actualPostsTitle = getActualPostsTitle(watchedPostsState);
     const items = content.querySelectorAll('item');
     const posts = Array.from(items).map((item) => {
       const title = item.querySelector('title').textContent;
-      if (firstPost && (String(title) === String(firstPost?.title))) {
+      const link = item.querySelector('link').textContent;
+      const description = item.querySelector('description').textContent;
+      if (actualPostsTitle.includes(title)) {
         throw new Error(labelTexts.exists);
       }
       const post = {
-        title: item.querySelector('title').textContent,
-        link: item.querySelector('link').textContent,
-        description: item.querySelector('description').textContent,
+        title: title,
+        link: link,
+        description: description,
         watch: false,
       };
       watchedPostsState.posts.push(post);

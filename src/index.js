@@ -11,6 +11,7 @@ import {
 import {
   watchedformState, watchedModalWindowState, input,
 } from './watchers/watchers.js';
+import { formState } from './states/states.js';
 
 const app = () => {
   const i18nInstance = i18next.createInstance();
@@ -23,6 +24,17 @@ const app = () => {
     noRSS: i18nInstance.t('invalidRSS'),
     networkErr: i18nInstance.t('networkErr'),
   };
+
+  const delay = 5000;
+  let timerId = setTimeout(function request() {
+    
+    if (formState.links.length === 0) {
+      //clearInterval(timerId);
+    }
+    timerId = setTimeout(request, delay);
+    console.log('Hello!');
+  }, delay);
+
   input.focus();
   const form = document.querySelector('form');
   form.addEventListener('submit', (event) => {
