@@ -27,28 +27,25 @@ const parseRSS = (data, labelTexts) => {
   try {
     const parser = new DOMParser();
     const content = parser.parseFromString(data.data.contents, 'text/xml');
-    const feed = {
-      title: content.querySelector('channel title').textContent,
-      description: content.querySelector('channel description').textContent,
-    };
     const actualPostsTitle = getActualPostsTitle();
     const items = content.querySelectorAll('item');
     const posts = Array.from(items).map((item) => {
       const title = item.querySelector('title').textContent;
       const link = item.querySelector('link').textContent;
       const description = item.querySelector('description').textContent;
-      if (actualPostsTitle.includes(title)) throw new Error(labelTexts.exists);
+      if (actualPostsTitle.includes(title)) return '';
       const post = { title, link, description };
       watchedPostsState.posts.push(post);
       return post;
     });
-    return { feed, posts };
-  } catch (error) {
-    if (error?.message === labelTexts.exists) {
-      throw new Error(labelTexts.exists);
-    } else {
-      throw new Error(labelTexts.noRSS);
-    }
+    const filteredPosts = posts.filter((post) => post !== '');
+    const feed = {
+      title: content.querySelector('channel title').textContent,
+      description: content.querySelector('channel description').textContent,
+    };
+    return { feed, filteredPosts };
+  } catch {
+    throw new Error(labelTexts.noRSS);
   }
 };
 
@@ -70,15 +67,15 @@ const getLi = (title, link) => {
 };
 
 const getFeeds = (normalizeFeedPosts) => {
-  //if (normalizeFeedPosts.feed.length === 0) return;
+  if (normalizeFeedPosts.filteredPosts.length === 0) return;
   const lead = document.querySelector('.lead');
   lead.textContent = 'Фиды';
   const parentFeed = lead.parentElement;
   const feedTitle = document.createElement('p');
-  feedTitle.classList.add('h5', 'm-2', 'i-block');
+  feedTitle.classList.add('h5', 'm-2', 'i-block', 'text-wrap');
   feedTitle.textContent = normalizeFeedPosts.feed.title;
   const feedDescription = document.createElement('p');
-  feedDescription.classList.add('text-muted', 'm-2', 'i-block');
+  feedDescription.classList.add('text-muted', 'm-2', 'i-block', 'text-wrap');
   feedDescription.textContent = normalizeFeedPosts.feed.description;
   const parent = document.createElement('div');
   parent.classList.add('m-2');
@@ -88,12 +85,12 @@ const getFeeds = (normalizeFeedPosts) => {
 };
 
 const getPosts = (normalizeFeedPosts) => {
-  //if (normalizeFeedPosts.posts.length === 0) return;
+  if (normalizeFeedPosts.filteredPosts.length === 0) return;
   const parentPosts = document.querySelector('#posts');
   const p = document.querySelector('.display-6');
   const ul = document.createElement('ul');
   ul.classList.add('list-unstyled');
-  normalizeFeedPosts.posts.map((post) => {
+  normalizeFeedPosts.filteredPosts.map((post) => {
     const li = getLi(post.title, post.link);
     ul.append(li);
     return li;
@@ -101,6 +98,7 @@ const getPosts = (normalizeFeedPosts) => {
   parentPosts.append(ul);
   p.textContent = 'Посты';
   parentPosts.classList.add('border-end', 'border-secondary', 'border-1');
+  console.log(`Загружено новых постов: ${normalizeFeedPosts.filteredPosts.length}`);
 };
 
 const getParams = (element) => {

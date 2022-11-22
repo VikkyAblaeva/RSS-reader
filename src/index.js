@@ -24,20 +24,14 @@ const app = () => {
     noRSS: i18nInstance.t('invalidRSS'),
     networkErr: i18nInstance.t('networkErr'),
   };
-
   const delay = 5000;
-  let timerId = setTimeout(function request() {
-    formState?.links.map((link) => {
-      console.log(link);
-      getRss(link).then((response) => console.log(response.data.contents));
-      //парсим
-      //находим только новые посты и пушим их в watchedPosts
-      //функция getPosts
-    });
-    timerId = setTimeout(request, delay);
-    console.log('Hello!');
+  setTimeout(function request() {
+    formState?.links.map((link) => getRss(link)
+      .then((response) => parseRSS(response, labelTexts))
+      .then((newPosts) => getPosts(newPosts))
+      .catch(() => console.log(labelTexts.networkErr)));
+    setTimeout(request, delay);
   }, delay);
-
   input.focus();
   const form = document.querySelector('form');
   form.addEventListener('submit', (event) => {

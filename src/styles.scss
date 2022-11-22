@@ -10,6 +10,19 @@
     background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;
     max-width: 100%;
 }
+
+#container {
+    overflow: auto;
+}
+
+#feeds {
+    flex: 1;
+}
+
+#posts {
+    flex: 2;
+}
+
 .bold-text {
     font-weight: 700;
 }

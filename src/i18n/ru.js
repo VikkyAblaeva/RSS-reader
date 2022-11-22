@@ -5,6 +5,6 @@ export default {
     alreadyExists: 'RSS уже существует',
     invalidURL: 'Ссылка должна быть валидным URL',
     invalidRSS: 'Ресурс не содержит валидный RSS',
-    networkErr: 'Ошибка сети',
+    networkErr: 'Происходит загрузка новых постов...',
   },
 };

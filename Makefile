@@ -8,4 +8,4 @@ start:
 	npm run start
 
 install:
-	npm install
+	npm ci
