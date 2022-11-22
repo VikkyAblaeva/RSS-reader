@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import './styles.scss';
 import {
-  isValidURL, getRss, parseRSS, getPostsAndFeeds, getParams, getCurrentPost,
+  isValidURL, getRss, parseRSS, getPosts, getParams, getCurrentPost, getFeeds,
 } from './utils.js';
 import resources from './i18n/resources.js';
 import {
@@ -27,10 +27,13 @@ const app = () => {
 
   const delay = 5000;
   let timerId = setTimeout(function request() {
-    
-    if (formState.links.length === 0) {
-      //clearInterval(timerId);
-    }
+    formState?.links.map((link) => {
+      console.log(link);
+      getRss(link).then((response) => console.log(response.data.contents));
+      //парсим
+      //находим только новые посты и пушим их в watchedPosts
+      //функция getPosts
+    });
     timerId = setTimeout(request, delay);
     console.log('Hello!');
   }, delay);
@@ -43,7 +46,10 @@ const app = () => {
       .then((isValid) => renderErrorsBeforeParse(isValid, inputValue, labelTexts))
       .then(() => getRss(inputValue))
       .then((rss) => parseRSS(rss, labelTexts))
-      .then((parsedData) => getPostsAndFeeds(parsedData))
+      .then((parsedData) => {
+        getPosts(parsedData);
+        getFeeds(parsedData);
+      })
       .then(() => renderAfterParse([watchedformState, labelTexts, inputValue]))
       .catch((err) => {
         watchedformState.errors.push(err);

@@ -14,7 +14,10 @@ const isValidURL = (url) => {
     .catch(() => false);
 };
 
-const getActualPostsTitle = (watchedPostsState) => watchedPostsState.posts.map((post) => post.title);
+const getActualPostsTitle = () => {
+  const postTitles = watchedPostsState.posts.map((post) => post.title);
+  return postTitles;
+};
 
 const getRss = (linkToFeed) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
@@ -28,21 +31,14 @@ const parseRSS = (data, labelTexts) => {
       title: content.querySelector('channel title').textContent,
       description: content.querySelector('channel description').textContent,
     };
-    const actualPostsTitle = getActualPostsTitle(watchedPostsState);
+    const actualPostsTitle = getActualPostsTitle();
     const items = content.querySelectorAll('item');
     const posts = Array.from(items).map((item) => {
       const title = item.querySelector('title').textContent;
       const link = item.querySelector('link').textContent;
       const description = item.querySelector('description').textContent;
-      if (actualPostsTitle.includes(title)) {
-        throw new Error(labelTexts.exists);
-      }
-      const post = {
-        title: title,
-        link: link,
-        description: description,
-        watch: false,
-      };
+      if (actualPostsTitle.includes(title)) throw new Error(labelTexts.exists);
+      const post = { title, link, description };
       watchedPostsState.posts.push(post);
       return post;
     });
@@ -73,27 +69,28 @@ const getLi = (title, link) => {
   return li;
 };
 
-const getFeed = (title, description) => {
+const getFeeds = (normalizeFeedPosts) => {
+  //if (normalizeFeedPosts.feed.length === 0) return;
+  const lead = document.querySelector('.lead');
+  lead.textContent = 'Фиды';
+  const parentFeed = lead.parentElement;
   const feedTitle = document.createElement('p');
   feedTitle.classList.add('h5', 'm-2', 'i-block');
-  feedTitle.textContent = title;
+  feedTitle.textContent = normalizeFeedPosts.feed.title;
   const feedDescription = document.createElement('p');
   feedDescription.classList.add('text-muted', 'm-2', 'i-block');
-  feedDescription.textContent = description;
+  feedDescription.textContent = normalizeFeedPosts.feed.description;
   const parent = document.createElement('div');
   parent.classList.add('m-2');
   parent.append(feedTitle);
   parent.append(feedDescription);
-  return parent;
+  parentFeed.append(parent);
 };
 
-const getPostsAndFeeds = (normalizeFeedPosts) => {
+const getPosts = (normalizeFeedPosts) => {
+  //if (normalizeFeedPosts.posts.length === 0) return;
   const parentPosts = document.querySelector('#posts');
   const p = document.querySelector('.display-6');
-  const lead = document.querySelector('.lead');
-  const parentFeed = lead.parentElement;
-  const feed = getFeed(normalizeFeedPosts.feed.title, normalizeFeedPosts.feed.description);
-  parentFeed.append(feed);
   const ul = document.createElement('ul');
   ul.classList.add('list-unstyled');
   normalizeFeedPosts.posts.map((post) => {
@@ -103,7 +100,6 @@ const getPostsAndFeeds = (normalizeFeedPosts) => {
   });
   parentPosts.append(ul);
   p.textContent = 'Посты';
-  lead.textContent = 'Фиды';
   parentPosts.classList.add('border-end', 'border-secondary', 'border-1');
 };
 
@@ -134,5 +130,5 @@ const getCurrentPost = (link) => {
 };
 
 export {
-  isValidURL, getRss, parseRSS, getPostsAndFeeds, getParams, getCurrentPost,
+  isValidURL, getRss, parseRSS, getPosts, getParams, getCurrentPost, getFeeds,
 };
