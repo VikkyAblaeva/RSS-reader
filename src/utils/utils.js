@@ -55,7 +55,8 @@ const getLi = (title, link) => {
   const a = document.createElement('a');
   a.setAttribute('href', link);
   a.setAttribute('target', '_blank');
-  a.classList.add('bold-text', 'd-block', 'col-9');
+  //a.classList.add('bold-text', 'd-block', 'col-9');
+  a.classList.add('fw-bold');
   a.textContent = title;
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
