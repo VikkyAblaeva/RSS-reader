@@ -2,12 +2,12 @@ import i18next from 'i18next';
 import './styles.scss';
 import {
   isValidURL, getRss, parseRSS, getPosts, getParams, getCurrentPost, getFeeds,
-} from './utils.js';
+} from './utils/utils.js';
 import resources from './i18n/resources.js';
 import {
   renderErrors, renderErrorsBeforeParse, renderAfterParse, renderModalWindow,
   displayNone, displayBlock,
-} from './render.js';
+} from './render/render.js';
 import {
   watchedformState, watchedModalWindowState, input,
 } from './watchers/watchers.js';

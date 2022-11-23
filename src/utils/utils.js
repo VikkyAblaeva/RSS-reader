@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import axios from 'axios';
-import { watchedPostsState } from './watchers/watchers.js';
+import { watchedPostsState } from '../watchers/watchers.js';
 
 const isValidURL = (url) => {
   const schema = yup.object().shape({
