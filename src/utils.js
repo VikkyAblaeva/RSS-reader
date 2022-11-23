@@ -19,9 +19,9 @@ const getActualPostsTitle = () => {
   return postTitles;
 };
 
-const getRss = (linkToFeed) => axios
+const getRss = (linkToFeed, labelTexts) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
-  .catch(() => { throw new Error('networkError'); });
+  .catch(() => { throw new Error(labelTexts.networkErr); });
 
 const parseRSS = (data, labelTexts) => {
   try {

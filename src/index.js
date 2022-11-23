@@ -23,13 +23,14 @@ const app = () => {
     empty: i18nInstance.t('notEmpty'),
     noRSS: i18nInstance.t('invalidRSS'),
     networkErr: i18nInstance.t('networkErr'),
+    loading: i18nInstance.t('loading'),
   };
   const delay = 5000;
   setTimeout(function request() {
-    formState?.links.map((link) => getRss(link)
+    formState?.links.map((link) => getRss(link, labelTexts)
       .then((response) => parseRSS(response, labelTexts))
       .then((newPosts) => getPosts(newPosts))
-      .catch(() => console.log(labelTexts.networkErr)));
+      .catch(() => console.log(labelTexts.loading)));
     setTimeout(request, delay);
   }, delay);
   input.focus();
@@ -38,7 +39,7 @@ const app = () => {
     const inputValue = input.value;
     isValidURL(inputValue)
       .then((isValid) => renderErrorsBeforeParse(isValid, inputValue, labelTexts))
-      .then(() => getRss(inputValue))
+      .then(() => getRss(inputValue, labelTexts))
       .then((rss) => parseRSS(rss, labelTexts))
       .then((parsedData) => {
         getPosts(parsedData);
