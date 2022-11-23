@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import './styles.scss';
+import './styles/styles.scss';
 import {
   isValidURL, getRss, parseRSS, getPosts, getParams, getCurrentPost, getFeeds,
 } from './utils/utils.js';
