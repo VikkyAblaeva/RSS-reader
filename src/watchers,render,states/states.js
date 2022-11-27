@@ -7,6 +7,10 @@ const formState = {
     innerHTML: '',
     labelClassList: '',
   },
+  button: {
+    active: '',
+    disabled: '',
+  },
   links: [],
   errors: [],
 };
@@ -25,12 +29,19 @@ const modalWindowState = {
 };
 
 const postsState = {
-  currentPost: {
-    link: '',
-    description: '',
-    title: '',
-  },
   posts: [],
 };
 
-export { formState, modalWindowState, postsState };
+const spinnerState = {
+  spinner: {
+    classList: '',
+  },
+  wrapper: {
+    classList: '',
+  },
+};
+
+export {
+  formState, modalWindowState,
+  postsState, spinnerState,
+};

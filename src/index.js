@@ -6,12 +6,13 @@ import {
 import resources from './i18n/resources.js';
 import {
   renderErrors, renderErrorsBeforeParse, renderAfterParse, renderModalWindow,
-  displayNone, displayBlock,
-} from './render/render.js';
+  displayNone, displayBlock, buttonActive, buttonDisabled,
+  spinnerActive, spinnerDisabled,
+} from './watchers,render,states/render.js';
 import {
-  watchedformState, watchedModalWindowState, input,
-} from './watchers/watchers.js';
-import { formState } from './states/states.js';
+  watchedformState, watchedModalWindowState, input, watchedSpinnerState,
+} from './watchers,render,states/watchers.js';
+import { formState } from './watchers,render,states/states.js';
 
 const app = () => {
   const i18nInstance = i18next.createInstance();
@@ -24,26 +25,33 @@ const app = () => {
     noRSS: i18nInstance.t('invalidRSS'),
     networkErr: i18nInstance.t('networkErr'),
     loading: i18nInstance.t('loading'),
+    posts: i18nInstance.t('posts'),
+    feeds: i18nInstance.t('feeds'),
+    newPosts: i18nInstance.t('newPosts'),
   };
   const delay = 5000;
   setTimeout(function request() {
     formState?.links.map((link) => getRss(link, labelTexts)
       .then((response) => parseRSS(response, labelTexts))
-      .then((newPosts) => getPosts(newPosts))
+      .then((newPosts) => getPosts(newPosts, labelTexts))
       .catch(() => console.log(labelTexts.loading)));
     setTimeout(request, delay);
   }, delay);
   input.focus();
   const form = document.querySelector('form');
   form.addEventListener('submit', (event) => {
+    buttonDisabled([watchedformState]);
+    spinnerActive([watchedSpinnerState]);
     const inputValue = input.value;
     isValidURL(inputValue)
       .then((isValid) => renderErrorsBeforeParse(isValid, inputValue, labelTexts))
       .then(() => getRss(inputValue, labelTexts))
       .then((rss) => parseRSS(rss, labelTexts))
       .then((parsedData) => {
-        getPosts(parsedData);
-        getFeeds(parsedData);
+        getPosts(parsedData, labelTexts);
+        getFeeds(parsedData, labelTexts.feeds);
+        buttonActive([watchedformState]);
+        spinnerDisabled([watchedSpinnerState]);
       })
       .then(() => renderAfterParse([watchedformState, labelTexts, inputValue]))
       .catch((err) => {

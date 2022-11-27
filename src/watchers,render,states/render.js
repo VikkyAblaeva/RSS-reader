@@ -31,6 +31,16 @@ const renderErrors = (params) => {
   watchedformState.label.innerHTML = lastError.message;
 };
 
+const buttonActive = (params) => {
+  const [watchedformState] = params;
+  watchedformState.button.disabled = false;
+};
+
+const buttonDisabled = (params) => {
+  const [watchedformState] = params;
+  watchedformState.button.disabled = true;
+};
+
 const displayNone = (params) => {
   const [watchedModalWindowState] = params;
   watchedModalWindowState.modal.style.display = 'none';
@@ -48,7 +58,19 @@ const renderModalWindow = (params) => {
   watchedModalWindowState.modal.currentPost.title = currentPost.title;
 };
 
+const spinnerActive = (params) => {
+  const [watchedSpinnerState] = params;
+  watchedSpinnerState.spinner.classList = 'spinner';
+  watchedSpinnerState.wrapper.classList = 'spin-wrapper';
+};
+
+const spinnerDisabled = (params) => {
+  const [watchedSpinnerState] = params;
+  watchedSpinnerState.spinner.classList = '';
+  watchedSpinnerState.wrapper.classList = '';
+};
+
 export {
   renderErrors, renderErrorsBeforeParse, renderAfterParse, renderModalWindow,
-  displayNone, displayBlock,
+  displayNone, displayBlock, buttonActive, buttonDisabled, spinnerActive, spinnerDisabled,
 };

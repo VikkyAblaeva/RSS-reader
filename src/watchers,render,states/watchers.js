@@ -1,8 +1,11 @@
 import onChange from 'on-change';
-import { formState, modalWindowState, postsState } from '../states/states.js';
+import {
+  formState, modalWindowState, postsState, spinnerState,
+} from './states.js';
 
 const input = document.querySelector('input');
 const label = document.querySelector('.result');
+const button = document.querySelector('#main');
 const watchedformState = onChange(formState, (path, value) => {
   switch (path) {
     case 'label.innerHTML':
@@ -17,12 +20,14 @@ const watchedformState = onChange(formState, (path, value) => {
     case 'input.inputClassList':
       input.classList = value;
       break;
+    case 'button.disabled':
+      button.disabled = value;
+      break;
     default:
       break;
   }
 });
 const modal = document.getElementById('myModal');
-
 const watchedModalWindowState = onChange(modalWindowState, (path, value) => {
   const modalHeader = document.querySelector('.modal-header');
   const h2 = modalHeader.querySelector('h2');
@@ -47,14 +52,20 @@ const watchedPostsState = onChange(postsState, (path, value) => {
     case 'watchedPostsState.posts':
       postsState.posts.push(value);
       break;
-    case 'watchedPostsState.currentPost.link':
-      postsState.currentPost.link = 'value';
+    default:
       break;
-    case 'watchedPostsState.currentPost.title':
-      postsState.currentPost.title = 'value';
+  }
+});
+
+const spinner = document.querySelector('#spinner');
+const wrapper = document.querySelector('#spin-wrapper');
+const watchedSpinnerState = onChange(spinnerState, (path, value) => {
+  switch (path) {
+    case 'spinner.classList':
+      spinner.classList = value;
       break;
-    case 'watchedPostsState.currentPost.description':
-      postsState.currentPost.description = 'value';
+    case 'wrapper.classList':
+      wrapper.classList = value;
       break;
     default:
       break;
@@ -63,5 +74,5 @@ const watchedPostsState = onChange(postsState, (path, value) => {
 
 export {
   watchedformState, watchedModalWindowState, watchedPostsState, input,
-  label, modal,
+  label, modal, watchedSpinnerState,
 };

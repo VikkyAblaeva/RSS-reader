@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
-  mode: 'development',
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
     main: path.resolve(__dirname, './src/index.js'),
   },
@@ -15,7 +15,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'webpack Boilerplate',
-      template: path.resolve(__dirname, './src/template.html'), // шаблон
+      template: path.resolve(__dirname, './template.html'), // шаблон
       filename: 'index.html', // название выходного файла
     }),
     new CleanWebpackPlugin(),

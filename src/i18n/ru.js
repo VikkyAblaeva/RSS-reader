@@ -7,5 +7,8 @@ export default {
     invalidRSS: 'Ресурс не содержит валидный RSS',
     networkErr: 'Ошибка сети',
     loading: 'Идет загрузка новых постов...',
+    newPosts: 'Загружено новых постов:',
+    posts: 'Посты',
+    feeds: 'Фиды',
   },
 };

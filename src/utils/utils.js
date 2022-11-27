@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import axios from 'axios';
-import { watchedPostsState } from '../watchers/watchers.js';
+import { watchedPostsState } from '../watchers,render,states/watchers.js';
 
 const isValidURL = (url) => {
   const schema = yup.object().shape({
@@ -66,10 +66,10 @@ const getLi = (title, link) => {
   return li;
 };
 
-const getFeeds = (normalizeFeedPosts) => {
+const getFeeds = (normalizeFeedPosts, text) => {
   if (normalizeFeedPosts.filteredPosts.length === 0) return;
   const lead = document.querySelector('.lead');
-  lead.textContent = 'Фиды';
+  lead.textContent = text;
   const parentFeed = lead.parentElement;
   const feedTitle = document.createElement('p');
   feedTitle.classList.add('h5', 'm-2', 'i-block', 'text-wrap');
@@ -84,7 +84,7 @@ const getFeeds = (normalizeFeedPosts) => {
   parentFeed.append(parent);
 };
 
-const getPosts = (normalizeFeedPosts) => {
+const getPosts = (normalizeFeedPosts, labelTexts) => {
   if (normalizeFeedPosts.filteredPosts.length === 0) return;
   const parentPosts = document.querySelector('#posts');
   const p = document.querySelector('.display-6');
@@ -96,9 +96,9 @@ const getPosts = (normalizeFeedPosts) => {
     return li;
   });
   parentPosts.append(ul);
-  p.textContent = 'Посты';
+  p.textContent = labelTexts.posts;
   parentPosts.classList.add('border-end', 'border-secondary', 'border-1');
-  console.log(`Загружено новых постов: ${normalizeFeedPosts.filteredPosts.length}`);
+  console.log(`${labelTexts.newPosts} ${normalizeFeedPosts.filteredPosts.length}`);
 };
 
 const getParams = (element) => {
