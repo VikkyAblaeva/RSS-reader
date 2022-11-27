@@ -8,3 +8,13 @@
 ![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
   
 :point_right: Click here [RSS-READER](https://frontend-project-11-steel.vercel.app/) :point_left:
+  
+#### Description: :zap:
+- Allows you to read one or more RSS news feeds.  
+- Loads new posts while reading to the end of the page.
+- Write the URL of the news feed and press Enter.  
+    
+#### System requirements: :zap:
+- internet connection;
+- your favorite browser;
+  
