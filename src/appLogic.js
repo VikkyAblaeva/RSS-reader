@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import axios from 'axios';
-import { watchedPostsState } from '../watchers,render,states/watchers.js';
+import { watchedPostsState, watchedModalWindowState } from './watchers.js';
+import { formState } from './states.js';
+import { renderModalWindow, displayBlock } from './render.js';
 
 const isValidURL = (url) => {
   const schema = yup.object().shape({
@@ -19,11 +21,11 @@ const getActualPostsTitle = () => {
   return postTitles;
 };
 
-const getRss = (linkToFeed, labelTexts) => axios
+const getRss = (linkToFeed, i18nInstance) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
-  .catch(() => { throw new Error(labelTexts.networkErr); });
+  .catch(() => { throw new Error(i18nInstance.t('networkErr')); });
 
-const parseRSS = (data, labelTexts) => {
+const parseRSS = (data, i18nInstance) => {
   try {
     const parser = new DOMParser();
     const content = parser.parseFromString(data.data.contents, 'text/xml');
@@ -45,8 +47,24 @@ const parseRSS = (data, labelTexts) => {
     };
     return { feed, filteredPosts };
   } catch {
-    throw new Error(labelTexts.noRSS);
+    throw new Error(i18nInstance.t('invalidRSS'));
   }
+};
+
+const findCurrentPost = (link) => {
+  const linkTextContent = link.innerHTML;
+  const currentPost = watchedPostsState.posts.map((post) => {
+    if (String(post.title) === String(linkTextContent)) {
+      return {
+        link: post.link,
+        title: post.title,
+        description: post.description,
+      };
+    }
+    return null;
+  });
+  const filteredPost = currentPost.filter((item) => item !== null);
+  return filteredPost[0];
 };
 
 const getLi = (title, link) => {
@@ -57,26 +75,36 @@ const getLi = (title, link) => {
   a.setAttribute('target', '_blank');
   a.classList.add('fw-bold');
   a.textContent = title;
+  a.addEventListener('click', () => a.classList.add('text-muted'));
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.classList.add('btn', 'btn-outline-primary', 'd-block', 'personal', 'col-3');
   button.textContent = 'Просмотр';
+  button.setAttribute('type', 'button');
+  button.addEventListener('click', () => {
+    const parent = button.parentElement;
+    const postLink = parent.querySelector('a');
+    postLink.classList.add('text-muted');
+    const currentPost = findCurrentPost(postLink);
+    renderModalWindow([watchedModalWindowState, currentPost]);
+    displayBlock([watchedModalWindowState]);
+  });
   li.append(a);
   li.append(button);
   return li;
 };
 
-const getFeeds = (normalizeFeedPosts, text) => {
-  if (normalizeFeedPosts.filteredPosts.length === 0) return;
+const getFeeds = (normalizedFeedPosts, i18nInstance) => {
+  if (normalizedFeedPosts.filteredPosts.length === 0) return;
   const lead = document.querySelector('.lead');
-  lead.textContent = text;
+  lead.textContent = i18nInstance.t('feeds');
   const parentFeed = lead.parentElement;
   const feedTitle = document.createElement('p');
   feedTitle.classList.add('h5', 'm-2', 'i-block', 'text-wrap');
-  feedTitle.textContent = normalizeFeedPosts.feed.title;
+  feedTitle.textContent = normalizedFeedPosts.feed.title;
   const feedDescription = document.createElement('p');
   feedDescription.classList.add('text-muted', 'm-2', 'i-block', 'text-wrap');
-  feedDescription.textContent = normalizeFeedPosts.feed.description;
+  feedDescription.textContent = normalizedFeedPosts.feed.description;
   const parent = document.createElement('div');
   parent.classList.add('m-2');
   parent.append(feedTitle);
@@ -84,49 +112,36 @@ const getFeeds = (normalizeFeedPosts, text) => {
   parentFeed.append(parent);
 };
 
-const getPosts = (normalizeFeedPosts, labelTexts) => {
-  if (normalizeFeedPosts.filteredPosts.length === 0) return;
+const getPosts = (normalizedFeedPosts, i18nInstance) => {
+  if (normalizedFeedPosts.filteredPosts.length === 0) return;
   const parentPosts = document.querySelector('#posts');
   const p = document.querySelector('.display-6');
   const ul = document.createElement('ul');
   ul.classList.add('list-unstyled');
-  normalizeFeedPosts.filteredPosts.map((post) => {
+  normalizedFeedPosts.filteredPosts.map((post) => {
     const li = getLi(post.title, post.link);
     ul.append(li);
     return li;
   });
   parentPosts.append(ul);
-  p.textContent = labelTexts.posts;
+  p.textContent = i18nInstance.t('posts');
   parentPosts.classList.add('border-end', 'border-secondary', 'border-1');
-  console.log(`${labelTexts.newPosts} ${normalizeFeedPosts.filteredPosts.length}`);
+  console.log(`${i18nInstance.t('newPosts')} ${normalizedFeedPosts.filteredPosts.length}`);
 };
 
-const getParams = (element) => {
-  const params = {
-    classlist: Array.from(element.classList),
-    tagName: element.tagName,
-    id: element.id,
-    parent: element.parentElement,
-  };
-  return params;
-};
-
-const getCurrentPost = (link) => {
-  const linkTextContent = link.innerHTML;
-  const currentPost = watchedPostsState.posts.map((post) => {
-    if (String(post.title) === String(linkTextContent)) {
-      return {
-        link: post.link,
-        title: post.title,
-        description: post.description,
-      };
-    }
-    return false;
-  });
-  const filteredPost = currentPost.filter((item) => item !== false);
-  return filteredPost[0];
+const getNewPosts = (i18nInstance) => {
+  const delay = 5000;
+  const promises = formState?.links.map((link) => getRss(link, i18nInstance)
+    .then((response) => parseRSS(response, i18nInstance))
+    .then((newPosts) => getPosts(newPosts, i18nInstance))
+    .catch(() => console.log(i18nInstance.t('loading'))));
+  setTimeout(() => {
+    Promise.all(promises)
+      .catch(() => console.log(i18nInstance.t('loading')))
+      .finally(() => getNewPosts(i18nInstance));
+  }, delay);
 };
 
 export {
-  isValidURL, getRss, parseRSS, getPosts, getParams, getCurrentPost, getFeeds,
+  isValidURL, getRss, parseRSS, getPosts, findCurrentPost, getFeeds, getNewPosts,
 };

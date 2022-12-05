@@ -1,21 +1,21 @@
-const renderErrorsBeforeParse = (isValid, inputValue, labelTexts) => {
+const renderErrorsBeforeParse = (isValid, inputValue, i18nInstance) => {
   if (inputValue === '') {
-    throw new Error(labelTexts.empty);
+    throw new Error(i18nInstance.t('notEmpty'));
   }
   if (isValid === false) {
-    throw new Error(labelTexts.invalid);
+    throw new Error(i18nInstance.t('invalidURL'));
   }
 };
 
 const renderAfterParse = (params) => {
-  const [watchedformState, labelTexts, inputValue] = params;
+  const [watchedformState, i18nInstance, inputValue] = params;
   watchedformState.input.value = inputValue;
   if (watchedformState.links.includes(inputValue)) {
-    throw new Error(labelTexts.exists);
+    throw new Error(i18nInstance.t('alreadyExists'));
   }
   if (!watchedformState.links.includes(inputValue)) {
     watchedformState.links.push(inputValue);
-    watchedformState.label.innerHTML = labelTexts.valid;
+    watchedformState.label.innerHTML = i18nInstance.t('sucsess');
     watchedformState.label.labelClassList = 'result text-success';
     watchedformState.input.inputClassList = 'form-control mb-2';
     watchedformState.input.value = '';
