@@ -1,25 +1,14 @@
-const formState = {
-  input: {
-    value: '',
-    inputClassList: '',
+const state = {
+  form: {
+    status: 'not active',
   },
-  label: {
-    innerHTML: '',
-    labelClassList: '',
-  },
-  button: {
-    active: '',
-    disabled: '',
-  },
+  posts: [],
   links: [],
   errors: [],
-};
-
-const modalWindowState = {
+  input: {
+    value: '',
+  },
   modal: {
-    style: {
-      display: '',
-    },
     currentPost: {
       link: '',
       description: '',
@@ -28,20 +17,4 @@ const modalWindowState = {
   },
 };
 
-const postsState = {
-  posts: [],
-};
-
-const spinnerState = {
-  spinner: {
-    classList: '',
-  },
-  wrapper: {
-    classList: '',
-  },
-};
-
-export {
-  formState, modalWindowState,
-  postsState, spinnerState,
-};
+export default state;

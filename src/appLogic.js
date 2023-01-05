@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import axios from 'axios';
-import { watchedPostsState } from './watchers.js';
-import { formState } from './states.js';
+import { watchedState } from './watchers.js';
+import state from './states.js';
 import { renderPosts } from './render.js';
 
 const isValidURL = (url) => {
@@ -17,7 +17,7 @@ const isValidURL = (url) => {
 };
 
 const getActualPostsTitle = () => {
-  const postTitles = watchedPostsState.posts.map((post) => post.title);
+  const postTitles = watchedState.posts.map((post) => post.title);
   return postTitles;
 };
 
@@ -37,7 +37,7 @@ const parseRSS = (data, i18nInstance) => {
       const description = item.querySelector('description').textContent;
       if (actualPostsTitle.includes(title)) return '';
       const post = { title, link, description };
-      watchedPostsState.posts.push(post);
+      watchedState.posts.push(post);
       return post;
     });
     const filteredPosts = posts.filter((post) => post !== '');
@@ -53,7 +53,7 @@ const parseRSS = (data, i18nInstance) => {
 
 const getNewPosts = (i18nInstance) => {
   const delay = 5000;
-  const promises = formState?.links.map((link) => getRss(link, i18nInstance)
+  const promises = state?.links.map((link) => getRss(link, i18nInstance)
     .then((response) => parseRSS(response, i18nInstance))
     .then((newPosts) => renderPosts(newPosts, i18nInstance))
     .catch(() => console.log(i18nInstance.t('loading'))));

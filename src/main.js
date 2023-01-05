@@ -4,22 +4,19 @@ import {
   isValidURL, getRss, parseRSS, getNewPosts, getErrorCheck,
 } from './appLogic.js';
 import {
-  renderErrors, renderAfterСheckOnExist, renderPosts,
-  spinnerActive, spinnerDisabled, renderFeeds,
+  renderAfterСheckOnExist, renderPosts,
+  renderFeeds,
 } from './render.js';
-import {
-  watchedformState, watchedModalWindowState, input, watchedSpinnerState,
-} from './watchers.js';
+import { input, watchedState, modal } from './watchers.js';
 
 const getAppRunning = () => {
   const i18nInstance = i18next.createInstance();
   i18nInstance.init({ lng: 'ru', debug: false, resources });
   getNewPosts(i18nInstance);
-  input.focus();
   const form = document.querySelector('form');
+  watchedState.form.status = 'init';
   form.addEventListener('submit', (event) => {
-    watchedformState.button.disabled = true;
-    spinnerActive([watchedSpinnerState]);
+    watchedState.form.status = 'loading';
     const inputValue = input.value;
     isValidURL(inputValue)
       .then((isValid) => getErrorCheck(isValid, inputValue, i18nInstance))
@@ -28,33 +25,26 @@ const getAppRunning = () => {
       .then((parsedData) => {
         renderPosts(parsedData, i18nInstance);
         renderFeeds(parsedData, i18nInstance);
-        watchedformState.button.disabled = false;
-        spinnerDisabled([watchedSpinnerState]);
+        watchedState.form.status = 'uploaded';
       })
-      .then(() => renderAfterСheckOnExist([watchedformState, i18nInstance, inputValue]))
+      .then(() => {
+        renderAfterСheckOnExist([i18nInstance, inputValue]);
+      })
       .catch((err) => {
-        watchedformState.errors.push(err);
-        spinnerDisabled([watchedSpinnerState]);
-        watchedformState.button.disabled = false;
-        renderErrors([watchedformState, inputValue]);
+        watchedState.input.value = inputValue;
+        watchedState.errors.push(err);
+        watchedState.form.status = 'error';
       });
-    input.focus();
     event.preventDefault();
   });
-  const modalWindow = document.querySelector('#myModal');
-  modalWindow.addEventListener('click', (event) => {
+  modal.addEventListener('click', (event) => {
     const eventTarget = event.target;
-    if (eventTarget.id === 'closeModal') {
-      watchedModalWindowState.modal.style.display = 'none';
+    if (eventTarget.id === 'closeModal' || eventTarget.classList.contains('close')
+    || eventTarget.classList.contains('modal')) {
+      modal.style.display = 'none';
     }
     if (eventTarget.id === 'go') {
-      window.open(watchedModalWindowState.modal.currentPost.link, '_blank').focus();
-    }
-    if (eventTarget.classList.contains('close')) {
-      watchedModalWindowState.modal.style.display = 'none';
-    }
-    if (eventTarget.classList.contains('modal')) {
-      watchedModalWindowState.modal.style.display = 'none';
+      window.open(watchedState.modal.currentPost.link, '_blank').focus();
     }
   });
 };
