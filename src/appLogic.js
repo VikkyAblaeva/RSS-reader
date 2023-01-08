@@ -23,7 +23,7 @@ const getActualPostsTitle = () => {
 
 const getRss = (linkToFeed, i18nInstance) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
-  .catch(() => { throw new Error(i18nInstance.t('networkErr')); });
+  .catch(() => { throw new Error(i18nInstance.t('errors.networkErr')); });
 
 const parseRSS = (data, i18nInstance) => {
   try {
@@ -47,7 +47,7 @@ const parseRSS = (data, i18nInstance) => {
     };
     return { feed, filteredPosts };
   } catch {
-    throw new Error(i18nInstance.t('invalidRSS'));
+    throw new Error(i18nInstance.t('errors.invalidRSS'));
   }
 };
 
@@ -56,20 +56,20 @@ const getNewPosts = (i18nInstance) => {
   const promises = state?.links.map((link) => getRss(link, i18nInstance)
     .then((response) => parseRSS(response, i18nInstance))
     .then((newPosts) => renderPosts(newPosts, i18nInstance))
-    .catch(() => console.log(i18nInstance.t('loading'))));
+    .catch(() => console.log(i18nInstance.t('texts.loading'))));
   setTimeout(() => {
     Promise.all(promises)
-      .catch(() => console.log(i18nInstance.t('loading')))
+      .catch(() => console.log(i18nInstance.t('texts.loading')))
       .finally(() => getNewPosts(i18nInstance));
   }, delay);
 };
 
 const getErrorCheck = (isValid, inputValue, i18nInstance) => {
   if (inputValue === '') {
-    throw new Error(i18nInstance.t('notEmpty'));
+    throw new Error(i18nInstance.t('errors.notEmpty'));
   }
   if (isValid === false) {
-    throw new Error(i18nInstance.t('invalidURL'));
+    throw new Error(i18nInstance.t('errors.invalidURL'));
   }
 };
 

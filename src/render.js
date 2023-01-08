@@ -1,25 +1,9 @@
-import {
-  label, modal, watchedState,
-} from './watchers.js';
-
-const renderAfterСheckOnExist = (params) => {
-  const [i18nInstance, inputValue] = params;
-  watchedState.input.value = inputValue;
-  if (watchedState.links.includes(inputValue)) {
-    throw new Error(i18nInstance.t('alreadyExists'));
-  }
-  if (!watchedState.links.includes(inputValue)) {
-    watchedState.links.push(inputValue);
-    label.innerHTML = i18nInstance.t('sucsess');
-    watchedState.input.value = '';
-    watchedState.form.status = 'sucsess';
-  }
-};
+import { modal, watchedState } from './watchers.js';
 
 const renderFeeds = (normalizedFeedPosts, i18nInstance) => {
   if (normalizedFeedPosts.filteredPosts.length === 0) return;
   const lead = document.querySelector('.lead');
-  lead.textContent = i18nInstance.t('feeds');
+  lead.textContent = i18nInstance.t('texts.feeds');
   const parentFeed = lead.parentElement;
   const feedTitle = document.createElement('p');
   feedTitle.classList.add('h5', 'm-2', 'i-block', 'text-wrap');
@@ -95,12 +79,9 @@ const renderPosts = (normalizedFeedPosts, i18nInstance) => {
     return li;
   });
   parentPosts.append(ul);
-  p.textContent = i18nInstance.t('posts');
+  p.textContent = i18nInstance.t('texts.posts');
   parentPosts.classList.add('border-end', 'border-secondary', 'border-1');
-  console.log(`${i18nInstance.t('newPosts')} ${normalizedFeedPosts.filteredPosts.length}`);
+  console.log(`${i18nInstance.t('texts.newPosts')} ${normalizedFeedPosts.filteredPosts.length}`);
 };
 
-export {
-  renderAfterСheckOnExist,
-  renderPosts, renderFeeds,
-};
+export { renderPosts, renderFeeds };

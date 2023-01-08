@@ -3,18 +3,16 @@ import resources from './i18n/resources.js';
 import {
   isValidURL, getRss, parseRSS, getNewPosts, getErrorCheck,
 } from './appLogic.js';
-import {
-  renderAfterСheckOnExist, renderPosts,
-  renderFeeds,
-} from './render.js';
+import { renderPosts, renderFeeds } from './render.js';
 import { input, watchedState, modal } from './watchers.js';
 
+const i18nInstance = i18next.createInstance();
+i18nInstance.init({ lng: 'ru', debug: false, resources });
+
 const getAppRunning = () => {
-  const i18nInstance = i18next.createInstance();
-  i18nInstance.init({ lng: 'ru', debug: false, resources });
   getNewPosts(i18nInstance);
   const form = document.querySelector('form');
-  watchedState.form.status = 'init';
+  input.focus();
   form.addEventListener('submit', (event) => {
     watchedState.form.status = 'loading';
     const inputValue = input.value;
@@ -25,10 +23,19 @@ const getAppRunning = () => {
       .then((parsedData) => {
         renderPosts(parsedData, i18nInstance);
         renderFeeds(parsedData, i18nInstance);
-        watchedState.form.status = 'uploaded';
+        watchedState.form.status = 'pending';
       })
       .then(() => {
-        renderAfterСheckOnExist([i18nInstance, inputValue]);
+        watchedState.input.value = inputValue;
+        if (watchedState.links.includes(inputValue)) {
+          throw new Error(i18nInstance.t('errors.alreadyExists'));
+        }
+        if (!watchedState.links.includes(inputValue)) {
+          watchedState.links.push(inputValue);
+          watchedState.form.status = 'success';
+          watchedState.form.label.text = i18nInstance.t('texts.success');
+          input.focus();
+        }
       })
       .catch((err) => {
         watchedState.input.value = inputValue;
@@ -49,4 +56,4 @@ const getAppRunning = () => {
   });
 };
 
-export default getAppRunning;
+export { getAppRunning, i18nInstance };

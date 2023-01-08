@@ -1,6 +1,9 @@
 const state = {
   form: {
-    status: 'not active',
+    status: 'pending',
+    label: {
+      text: '',
+    },
   },
   posts: [],
   links: [],
