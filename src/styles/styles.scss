@@ -17,14 +17,14 @@
       border-radius: 50%;
       animation: spin 2s linear infinite;
       
-      &:before, &:after{
+      &::before, &::after{
         content:'';
         position: absolute;
         border: 3px solid transparent;
         border-radius: 50%;
       }
       
-      &:before{
+      &::before{
         border-top-color: #4682B4;
         top: -12px;
         left: -12px;
@@ -33,7 +33,7 @@
         animation: spin 3s linear infinite;
       }
       
-      &:after{
+      &::after{
         border-top-color: #1E90FF;
         top: 6px;
         left: 6px;

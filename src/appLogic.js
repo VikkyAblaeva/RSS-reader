@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import axios from 'axios';
 import { watchedState } from './watchers.js';
-import state from './states.js';
+import state from './state.js';
 import { renderPosts } from './render.js';
 
 const isValidURL = (url) => {

@@ -1,4 +1,4 @@
 import './styles/styles.scss';
-import { getAppRunning } from './application.js';
+import { getAppRunning } from './initialization.js';
 
 getAppRunning();

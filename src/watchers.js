@@ -1,5 +1,6 @@
 import onChange from 'on-change';
-import state from './states.js';
+import { get } from 'lodash';
+import state from './state.js';
 
 const input = document.querySelector('input');
 const label = document.querySelector('.result');
@@ -11,8 +12,8 @@ const button = document.querySelector('#main');
 const spinner = document.querySelector('#spinner');
 const wrapper = document.querySelector('#spin-wrapper');
 
-const handleStatus = (value) => {
-  switch (value) {
+const handleStatus = (status) => {
+  switch (status) {
     case 'loading':
       button.disabled = true;
       spinner.classList = 'spinner';
@@ -36,8 +37,15 @@ const handleStatus = (value) => {
       input.classList = 'form-control mb-2 is-invalid';
       break;
     default:
-      throw new Error(`${value}`);
+      throw new Error(`Unknown status - ${status}`);
   }
+};
+
+const getCheckValidPath = (path) => {
+  if (!get(state, path)) {
+    throw new Error(`Invalid path - ${path}`);
+  }
+  return 'valid path in watchedState';
 };
 
 const watchedState = onChange(state, (path, value) => {
@@ -47,12 +55,6 @@ const watchedState = onChange(state, (path, value) => {
       break;
     case 'input.value':
       input.value = value;
-      break;
-    case 'posts':
-      break;
-    case 'modal.currentPost.link':
-      break;
-    case 'links':
       break;
     case 'modal.currentPost.description':
       modalBody.textContent = value;
@@ -65,10 +67,10 @@ const watchedState = onChange(state, (path, value) => {
       break;
     case 'errors':
       state.form.label.text = value;
-      label.innerHTML = (state.errors[state.errors.length - 1]).message;
+      label.innerHTML = (state.errors.at(-1)).message;
       break;
     default:
-      handleStatus('error');
+      getCheckValidPath(path);
   }
 });
 

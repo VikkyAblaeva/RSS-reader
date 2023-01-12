@@ -18,52 +18,43 @@ const renderFeeds = (normalizedFeedPosts, i18nInstance) => {
   parentFeed.append(parent);
 };
 
-const renderModalWindow = (currentPost) => {
-  watchedState.modal.currentPost.link = currentPost.link;
-  watchedState.modal.currentPost.description = currentPost.description;
-  watchedState.modal.currentPost.title = currentPost.title;
-};
-
-const findCurrentPost = (actualLink) => {
-  const linkTextContent = actualLink.innerHTML;
-  const currentPost = watchedState.posts.map((post) => {
-    if (String(post.title) === String(linkTextContent)) {
-      return {
-        link: post.link,
-        title: post.title,
-        description: post.description,
-      };
-    }
-    return null;
-  });
-  const filteredPost = currentPost.filter((item) => item !== null);
-  return filteredPost[0];
-};
-
-const getLi = (title, link) => {
-  const li = document.createElement('li');
-  li.classList.add('d-flex', 'm-2', 'fs-6');
-  const a = document.createElement('a');
-  a.setAttribute('href', link);
-  a.setAttribute('target', '_blank');
-  a.classList.add('fw-bold');
-  a.textContent = title;
-  a.addEventListener('click', () => a.classList.add('text-muted'));
+const getButton = () => {
   const newButton = document.createElement('button');
   newButton.setAttribute('type', 'button');
   newButton.classList.add('btn', 'btn-outline-primary', 'd-block', 'personal', 'col-3');
   newButton.textContent = 'Просмотр';
   newButton.setAttribute('type', 'button');
-  newButton.addEventListener('click', () => {
-    const parent = newButton.parentElement;
+  return newButton;
+};
+
+const getElementA = (title, link) => {
+  const elementA = document.createElement('a');
+  elementA.setAttribute('href', link);
+  elementA.setAttribute('target', '_blank');
+  elementA.classList.add('fw-bold');
+  elementA.textContent = title;
+  return elementA;
+};
+
+const getNodeElementOfPost = (title, link) => {
+  const li = document.createElement('li');
+  li.classList.add('d-flex', 'm-2', 'fs-6');
+  const a = getElementA(title, link);
+  a.addEventListener('click', () => a.classList.add('text-muted'));
+  const nodeButton = getButton();
+  nodeButton.addEventListener('click', () => {
+    const parent = nodeButton.parentElement;
     const postLink = parent.querySelector('a');
     postLink.classList.add('text-muted');
-    const currentPost = findCurrentPost(postLink);
-    renderModalWindow(currentPost);
+    const linkTextContent = postLink.innerHTML;
+    const currentPost = watchedState.posts.find((post) => String(post.title) === linkTextContent);
+    watchedState.modal.currentPost.link = currentPost.link;
+    watchedState.modal.currentPost.description = currentPost.description;
+    watchedState.modal.currentPost.title = currentPost.title;
     modal.style.display = 'block';
   });
   li.append(a);
-  li.append(newButton);
+  li.append(nodeButton);
   return li;
 };
 
@@ -74,7 +65,7 @@ const renderPosts = (normalizedFeedPosts, i18nInstance) => {
   const ul = document.createElement('ul');
   ul.classList.add('list-unstyled');
   normalizedFeedPosts.filteredPosts.map((post) => {
-    const li = getLi(post.title, post.link);
+    const li = getNodeElementOfPost(post.title, post.link);
     ul.append(li);
     return li;
   });
