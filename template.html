@@ -31,24 +31,29 @@
           <p class="display-6 d-flex"></p>
         </div>
         <div id="feeds" class="m-2">
-          <p class="lead h4 m-2"></p>
+          <p class="description h4 m-2"></p>
         </div>
       </div>
-      <div id="myModal" class="modal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2>Шапка модального окна</h2>
-            <span class="close">&times;</span>
-          </div>
-          <div class="modal-body">
-            <p>Какой-то текст в теле модального окна</p>
-          </div>
-          <div class="modal-footer">
-            <button id="go" type="button" class="btn btn-primary">Читать полностью</button>
-            <button id="closeModal" type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+      <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="postsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="modal-title" id="postsModalLabel">Название</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Описание
+            </div>
+            <div class="modal-footer">
+              <a href="#" target="_blank">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                Читать полностью
+              </button>
+            </a>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
           </div>
         </div>
-      </div>
     </main>
     <footer>
     </footer>

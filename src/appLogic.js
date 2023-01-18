@@ -1,19 +1,23 @@
 import * as yup from 'yup';
 import axios from 'axios';
+import { uniqueId } from 'lodash';
 import { watchedState } from './watchers.js';
 import state from './state.js';
 import { renderPosts } from './render.js';
 
-const isValidURL = (url) => {
-  const schema = yup.object().shape({
-    website: yup.string().min(3).url(),
+const isValid = (url, i18nInstance) => {
+  const validationUrl = yup.object().shape({
+    website: yup.string().url(),
   });
-  return schema
+  return validationUrl
     .validate({
       website: url,
     })
-    .then(() => true)
-    .catch(() => false);
+    .then(() => {
+      const validationExist = yup.mixed().notOneOf(watchedState.links);
+      return validationExist.isValid(url);
+    })
+    .catch(() => { throw new Error(i18nInstance.t('errors.invalidURL')); });
 };
 
 const getActualPostsTitle = () => {
@@ -36,7 +40,10 @@ const parseRSS = (data, i18nInstance) => {
       const link = item.querySelector('link').textContent;
       const description = item.querySelector('description').textContent;
       if (actualPostsTitle.includes(title)) return '';
-      const post = { title, link, description };
+      const postId = uniqueId();
+      const post = {
+        title, link, description, postId,
+      };
       watchedState.posts.push(post);
       return post;
     });
@@ -64,15 +71,15 @@ const getNewPosts = (i18nInstance) => {
   }, delay);
 };
 
-const getErrorCheck = (isValid, inputValue, i18nInstance) => {
+const getErrorCheck = (resultIsValid, inputValue, i18nInstance) => {
   if (inputValue === '') {
     throw new Error(i18nInstance.t('errors.notEmpty'));
   }
-  if (isValid === false) {
-    throw new Error(i18nInstance.t('errors.invalidURL'));
+  if (resultIsValid === false) {
+    throw new Error(i18nInstance.t('errors.alreadyExists'));
   }
 };
 
 export {
-  isValidURL, getRss, parseRSS, getNewPosts, getErrorCheck,
+  isValid, getRss, parseRSS, getNewPosts, getErrorCheck,
 };

@@ -6,6 +6,7 @@ const state = {
     },
   },
   posts: [],
+  seenPosts: [],
   links: [],
   errors: [],
   input: {

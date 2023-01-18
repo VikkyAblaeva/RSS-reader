@@ -1,9 +1,11 @@
 export default {
   translation: {
+    button: {
+      name: 'Просмотр',
+    },
     texts: {
       success: 'RSS успешно загружен',
       loading: 'Идет загрузка новых постов...',
-      newPosts: 'Загружено новых постов:',
       posts: 'Посты',
       feeds: 'Фиды',
     },

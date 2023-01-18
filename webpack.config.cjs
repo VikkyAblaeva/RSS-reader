@@ -29,6 +29,7 @@ module.exports = {
     rules: [
       {
         test: /\.(scss)$/,
+        enforce: "pre",
         use: [
           {
             loader: 'babel-loader',
@@ -42,6 +43,9 @@ module.exports = {
           },
           {
             loader: 'css-loader'
+          },
+          {
+            loader: 'source-map-loader',
           },
           {
             loader: 'postcss-loader',
