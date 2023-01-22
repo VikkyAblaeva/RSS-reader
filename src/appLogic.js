@@ -1,11 +1,9 @@
 import * as yup from 'yup';
 import axios from 'axios';
 import { uniqueId } from 'lodash';
-import { watchedState } from './watchers.js';
-import state from './state.js';
 import { renderPosts } from './render.js';
 
-const isValid = (url, i18nInstance) => {
+const isValid = (url, links) => {
   const validationUrl = yup.object().shape({
     website: yup.string().url(),
   });
@@ -14,69 +12,76 @@ const isValid = (url, i18nInstance) => {
       website: url,
     })
     .then(() => {
-      const validationExist = yup.mixed().notOneOf(watchedState.links);
+      const validationExist = yup.mixed().notOneOf(links);
       return validationExist.isValid(url);
     })
-    .catch(() => { throw new Error(i18nInstance.t('errors.invalidURL')); });
+    .catch(() => { throw new Error('errors.invalidURL'); });
 };
 
-const getActualPostsTitle = () => {
+const getActualPostsTitle = (watchedState) => {
   const postTitles = watchedState.posts.map((post) => post.title);
   return postTitles;
 };
 
-const getRss = (linkToFeed, i18nInstance) => axios
+const getRss = (linkToFeed) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(linkToFeed)}`)
-  .catch(() => { throw new Error(i18nInstance.t('errors.networkErr')); });
+  .catch(() => { throw new Error('errors.networkErr'); });
 
-const parseRSS = (data, i18nInstance) => {
+const getPost = ({ title, link, description }, watchedState) => {
+  const actualPostsTitle = getActualPostsTitle(watchedState);
+  if (actualPostsTitle.includes(title)) {
+    return null;
+  }
+  const postId = uniqueId();
+  const post = {
+    title, link, description, postId,
+  };
+  watchedState.posts.push(post);
+  return post;
+};
+
+const parseRSS = (data, watchedState) => {
   try {
     const parser = new DOMParser();
     const content = parser.parseFromString(data.data.contents, 'text/xml');
-    const actualPostsTitle = getActualPostsTitle();
     const items = content.querySelectorAll('item');
     const posts = Array.from(items).map((item) => {
       const title = item.querySelector('title').textContent;
       const link = item.querySelector('link').textContent;
       const description = item.querySelector('description').textContent;
-      if (actualPostsTitle.includes(title)) return '';
-      const postId = uniqueId();
-      const post = {
-        title, link, description, postId,
-      };
-      watchedState.posts.push(post);
-      return post;
+      return getPost({ title, link, description }, watchedState);
     });
-    const filteredPosts = posts.filter((post) => post !== '');
+    const filteredPosts = posts.filter((post) => post !== null);
     const feed = {
       title: content.querySelector('channel title').textContent,
       description: content.querySelector('channel description').textContent,
     };
     return { feed, filteredPosts };
   } catch {
-    throw new Error(i18nInstance.t('errors.invalidRSS'));
+    throw new Error('errors.invalidRSS');
   }
 };
 
-const getNewPosts = (i18nInstance) => {
+const getNewPosts = (watchedState, i18nInstance) => {
   const delay = 5000;
-  const promises = state?.links.map((link) => getRss(link, i18nInstance)
-    .then((response) => parseRSS(response, i18nInstance))
-    .then((newPosts) => renderPosts(newPosts, i18nInstance))
+  const links = watchedState?.links || [];
+  const promises = links.map((link) => getRss(link)
+    .then((response) => parseRSS(response, watchedState))
+    .then((newPosts) => renderPosts(newPosts, i18nInstance, watchedState))
     .catch(() => console.log(i18nInstance.t('texts.loading'))));
   setTimeout(() => {
     Promise.all(promises)
       .catch(() => console.log(i18nInstance.t('texts.loading')))
-      .finally(() => getNewPosts(i18nInstance));
+      .finally(() => getNewPosts(watchedState, i18nInstance));
   }, delay);
 };
 
-const getErrorCheck = (resultIsValid, inputValue, i18nInstance) => {
+const getErrorCheck = (resultIsValid, inputValue) => {
   if (inputValue === '') {
-    throw new Error(i18nInstance.t('errors.notEmpty'));
+    throw new Error('errors.notEmpty');
   }
   if (resultIsValid === false) {
-    throw new Error(i18nInstance.t('errors.alreadyExists'));
+    throw new Error('errors.alreadyExists');
   }
 };
 
