@@ -1,7 +1,6 @@
 import * as yup from 'yup';
 import axios from 'axios';
 import { uniqueId } from 'lodash';
-import { renderPosts } from './render.js';
 
 const isValid = (url, links) => {
   const validationUrl = yup.object().shape({
@@ -15,7 +14,10 @@ const isValid = (url, links) => {
       const validationExist = yup.mixed().notOneOf(links);
       return validationExist.isValid(url);
     })
-    .catch(() => { throw new Error('errors.invalidURL'); });
+    .catch((e) => {
+      console.log(e);
+      throw new Error('errors.invalidURL');
+    });
 };
 
 const getActualPostsTitle = (watchedState) => {
@@ -57,23 +59,19 @@ const parseRSS = (data, watchedState) => {
       description: content.querySelector('channel description').textContent,
     };
     return { feed, filteredPosts };
-  } catch {
+  } catch (e) {
+    console.log(e);
     throw new Error('errors.invalidRSS');
   }
 };
 
-const getNewPosts = (watchedState, i18nInstance) => {
-  const delay = 5000;
-  const links = watchedState?.links || [];
-  const promises = links.map((link) => getRss(link)
-    .then((response) => parseRSS(response, watchedState))
-    .then((newPosts) => renderPosts(newPosts, i18nInstance, watchedState))
-    .catch(() => console.log(i18nInstance.t('texts.loading'))));
-  setTimeout(() => {
-    Promise.all(promises)
-      .catch(() => console.log(i18nInstance.t('texts.loading')))
-      .finally(() => getNewPosts(watchedState, i18nInstance));
-  }, delay);
+const watchSeenPosts = (listElements, watchedState) => {
+  Array.from(listElements).forEach((listElement) => {
+    listElement.addEventListener('click', () => {
+      const link = listElement.querySelector('a');
+      watchedState.seenPosts.add(link.id);
+    });
+  });
 };
 
 const getErrorCheck = (resultIsValid, inputValue) => {
@@ -86,5 +84,5 @@ const getErrorCheck = (resultIsValid, inputValue) => {
 };
 
 export {
-  isValid, getRss, parseRSS, getNewPosts, getErrorCheck,
+  isValid, getRss, parseRSS, getErrorCheck, watchSeenPosts,
 };
